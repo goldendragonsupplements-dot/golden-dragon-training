@@ -1,3 +1,9 @@
+P1 CSS: OK
+P2 HTML: OK
+P3 JS: OK
+
+Total changes: 3/3
+Size: 376761 -> 380638
 <!DOCTYPE html>
 <html lang="hr">
 <head>
@@ -355,6 +361,23 @@ a{text-decoration:none; color:inherit}
 
 .toast{ position:fixed; bottom:90px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--ink); color:#fff; padding:13px 22px; border-radius:12px; font-size:14px; font-weight:500; z-index:200; opacity:0; transition:all .3s; box-shadow:0 8px 24px rgba(0,0,0,.2); white-space:nowrap }
 .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+/* CATEGORY GRID */
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px}
+.cat-card{
+  background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:20px 14px 16px;display:flex;flex-direction:column;align-items:center;
+  gap:8px;cursor:pointer;transition:transform .12s,box-shadow .15s;
+  position:relative;overflow:hidden;text-align:center;
+}
+.cat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--gold)}
+.cat-card:active{transform:scale(.96);box-shadow:0 6px 20px rgba(0,0,0,.07)}
+.cat-card.med::after{background:var(--red)}
+.cat-icon{font-size:32px;line-height:1}
+.cat-name{font-family:'Oswald',sans-serif;font-weight:600;font-size:15px;letter-spacing:.3px;color:var(--ink)}
+.cat-count{font-size:11.5px;color:var(--ink-faint);line-height:1.4;margin-top:1px}
+.cat-back{display:flex;align-items:center;gap:10px;margin-bottom:16px;cursor:pointer;padding:4px 0}
+.cat-back-ic{width:36px;height:36px;border-radius:11px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--ink);flex-shrink:0}
+.cat-back-lbl{font-family:'Oswald',sans-serif;font-weight:600;font-size:16px;color:var(--ink)}
 
 /* LOADING SPINNER */
 .spinner-overlay{ position:fixed; inset:0; z-index:500; background:rgba(250,248,243,.95); display:flex; align-items:center; justify-content:center }
@@ -403,10 +426,7 @@ a{text-decoration:none; color:inherit}
       <div class="ic">⚠️</div>
       <div class="tx" data-i18n="home_warn"><b>Vježbaš na vlastitu odgovornost.</b> Ova aplikacija nije zamjena za liječnika ni fizioterapeuta.</div>
     </div>
-    <div class="sec-label" data-i18n="sec_general">Opći programi</div>
-    <div id="general-progs"></div>
-    <div class="sec-label" data-i18n="sec_special">Specijalni programi</div>
-    <div id="special-progs"></div>
+    <div id="home-content"></div>
   </div>
 </div>
 
@@ -1680,25 +1700,107 @@ function rerenderCurrent(){
 /* ============================================================
    HOME
    ============================================================ */
+/* ============================================================
+   CATEGORY SYSTEM
+   ============================================================ */
+const CATEGORIES = {
+  home_bw:{
+    icon:'\uD83C\uDFE0',
+    name:{hr:'Kod ku\u0107e', de:'Zu Hause'},
+    desc:{hr:'Bez opreme', de:'Ohne Ger\u00e4te'},
+    programs:['bw_beginner','daily_stretch'],
+    medical:false
+  },
+  gym:{
+    icon:'\uD83C\uDFCB\uFE0F',
+    name:{hr:'Teretana', de:'Fitnessstudio'},
+    desc:{hr:'\u0160ipka \u00b7 bu\u010dice \u00b7 sajla', de:'Langhantel \u00b7 Kurzhanteln'},
+    programs:['ppl','ppl_dumbbell','dumbbell_home'],
+    medical:false
+  },
+  fat_loss:{
+    icon:'\uD83D\uDD25',
+    name:{hr:'Mr\u0161avljenje', de:'Abnehmen'},
+    desc:{hr:'HIIT \u00b7 cardio', de:'HIIT \u00b7 Cardio'},
+    programs:['weight_loss'],
+    medical:false
+  },
+  drivers:{
+    icon:'\uD83D\uDE9B',
+    name:{hr:'Voza\u010di', de:'LKW-Fahrer'},
+    desc:{hr:'Na cesti', de:'Unterwegs'},
+    programs:['driver_cabin','driver_parking','driver_hotel','driver_parking_db'],
+    medical:false
+  },
+  health:{
+    icon:'\u2695\uFE0F',
+    name:{hr:'Zdravlje', de:'Gesundheit'},
+    desc:{hr:'Rehabilitacija \u00b7 le\u0111a \u00b7 50+', de:'Reha \u00b7 R\u00fccken \u00b7 50+'},
+    programs:['back_sciatica','fifty_plus'],
+    medical:true
+  },
+  women:{
+    icon:'\uD83D\uDC69',
+    name:{hr:'\u017dense', de:'Frauen'},
+    desc:{hr:'Stra\u017enjica \u00b7 core', de:'Ges\u00e4\u00df \u00b7 Core'},
+    programs:['women_beginner'],
+    medical:false
+  },
+  recovery:{
+    icon:'\uD83D\uDD04',
+    name:{hr:'Oporavak', de:'Erholung'},
+    desc:{hr:'PPL 6-mj. rehabilitacija', de:'PPL 6-Mon. Reha'},
+    programs:['ppl_phase1','ppl_phase2','ppl_phase3'],
+    medical:false
+  }
+};
+
+let _activeCat = null;
+
 function buildHome(){
-  const gen=document.getElementById('general-progs');
-  const spc=document.getElementById('special-progs');
-  if(!gen) return;
-  gen.innerHTML=''; spc.innerHTML='';
-  Object.entries(PROGRAMS).forEach(([id,p])=>{
-    const card=document.createElement('div');
-    card.className='prog-card';
-    card.onclick=()=>selectProgram(id);
-    card.innerHTML=`
-      <div class="prog-icon ${p.medical?'med':''}">${p.icon}</div>
-      <div class="prog-body">
-        <div class="prog-name">${p.name[LANG]}</div>
-        <div class="prog-meta">${p.meta[LANG]}</div>
-        <span class="prog-tag ${p.medical?'med':''}">${p.tag[LANG]}</span>
-      </div>
-      <div class="prog-arrow">›</div>`;
-    (p.section==='special'?spc:gen).appendChild(card);
+  const el = document.getElementById('home-content');
+  if(!el) return;
+  _activeCat = null;
+  const secLbl = LANG==='hr' ? 'Odaberi kategoriju' : 'Kategorie w\u00e4hlen';
+  let html = '<div class="sec-label" style="margin-top:16px">'+secLbl+'</div>';
+  html += '<div class="cat-grid">';
+  Object.entries(CATEGORIES).forEach(([cid, cat])=>{
+    const count = cat.programs.length;
+    const countTxt = count + (LANG==='hr' ? (count===1?' program':' programa') : (count===1?' Programm':' Programme'));
+    html += '<div class="cat-card '+(cat.medical?'med':'')+'" onclick="openCategory(\'' +cid+ '\')">'+
+      '<div class="cat-icon">'+cat.icon+'</div>'+
+      '<div class="cat-name">'+cat.name[LANG]+'</div>'+
+      '<div class="cat-count">'+cat.desc[LANG]+'<br>'+countTxt+'</div>'+
+      '</div>';
   });
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+function openCategory(cid){
+  _activeCat = cid;
+  const cat = CATEGORIES[cid];
+  const el = document.getElementById('home-content');
+  if(!el) return;
+  let html = '<div class="cat-back" onclick="buildHome()">'+
+    '<div class="cat-back-ic">\u2039</div>'+
+    '<div class="cat-back-lbl">'+cat.icon+' '+cat.name[LANG]+'</div>'+
+    '</div>';
+  cat.programs.forEach(pid=>{
+    const p = PROGRAMS[pid];
+    if(!p) return;
+    html += '<div class="prog-card" onclick="selectProgram(\''+pid+'\')">'+
+      '<div class="prog-icon '+(p.medical?'med':'')+'">'+p.icon+'</div>'+
+      '<div class="prog-body">'+
+        '<div class="prog-name">'+p.name[LANG]+'</div>'+
+        '<div class="prog-meta">'+p.meta[LANG]+'</div>'+
+        '<span class="prog-tag '+(p.medical?'med':'')+'">'+p.tag[LANG]+'</span>'+
+      '</div>'+
+      '<div class="prog-arrow">\u203a</div>'+
+      '</div>';
+  });
+  el.innerHTML = html;
+  window.scrollTo(0,0);
 }
 
 function selectProgram(id){
