@@ -2093,6 +2093,7 @@ let timerSeconds=90, timerTotal=90, timerInterval=null, timerRunning=false;
 const CIRC=213.6;
 function openTimer(){
   document.getElementById('timerOverlay').style.display='flex';
+  playStartBeep();
   resetTimerDisplay(); startTimer();
 }
 function setTimerPreset(s){
@@ -2325,6 +2326,22 @@ function playBeep(){
       o.start(ctx.currentTime+t);
       o.stop(ctx.currentTime+t+0.25);
     });
+  } catch(e){}
+}
+
+function playStartBeep(){
+  try {
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const o=ctx.createOscillator();
+    const g=ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value=520;
+    o.type='sine';
+    g.gain.setValueAtTime(0.35,ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.18);
+    o.start(ctx.currentTime);
+    o.stop(ctx.currentTime+0.18);
+    navigator.vibrate&&navigator.vibrate(60);
   } catch(e){}
 }
 
