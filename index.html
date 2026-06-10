@@ -296,6 +296,7 @@ a{text-decoration:none; color:inherit}
 /* REST BTN */
 .rest-btn{ width:100%; margin-top:5px; padding:11px; border-radius:11px; background:var(--ink); color:var(--gold); font-family:'Oswald',sans-serif; font-weight:600; font-size:13px; letter-spacing:1px; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:8px; transition:transform .1s }
 .rest-btn:active{transform:scale(.97)}
+.rest-sm{margin-top:3px; margin-bottom:10px; padding:9px; font-size:12px}
 
 /* TIMER */
 .timer-overlay{ position:fixed; inset:0; z-index:100; background:rgba(28,28,28,.97); display:none; flex-direction:column; align-items:center; justify-content:center; padding:30px; backdrop-filter:blur(4px) }
@@ -1978,9 +1979,10 @@ async function openSession(dayIdx, keepScreen){
           }
         })()}
         <button class="set-ok ${set.done?'done':''}" id="${exId}_ok_${si}" onclick="toggleSet('${exId}',${si})">✓</button>
-      </div>`;
+      </div>
+      <button class="rest-btn rest-sm" onclick="openTimer()">⏱ ${t('start_rest')}</button>`;
     });
-    html+=`<button class="rest-btn" onclick="openTimer()">⏱ ${t('start_rest')}</button></div>`;
+    html+=`</div>`;
   });
 
   if(day.stretch&&day.stretch.length){
@@ -2027,7 +2029,7 @@ function toggleSet(exId,si){
   const set=sessionState[exId].sets[si];
   set.done=!set.done;
   document.getElementById(exId+'_ok_'+si).classList.toggle('done',set.done);
-  if(set.done) openTimer();
+  // Odmor se NE pokreće automatski — korisnik ga pokreće ručno gumbom "Pokreni odmor"
 }
 function confirmExit(){ go('program'); }
 
