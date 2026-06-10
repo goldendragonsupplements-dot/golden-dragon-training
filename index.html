@@ -999,7 +999,7 @@ const PROGRAMS = {
   },
   ppl:{
     section:"general", medical:false, icon:"⚡",
-    name:{hr:"Push / Pull / Legs", de:"Push / Pull / Legs"},
+    name:{hr:"Split program — kućna teretana", de:"Split-Programm — Heim-Gym"},
     meta:{hr:"Kućna teretana · 3× tjedno · snaga", de:"Home-Gym · 3×/Woche · Kraft"},
     tag:{hr:"SREDNJE-NAPREDNO", de:"MITTEL-FORTGESCHRITTEN"},
     intro:{hr:"Klasični PPL raspored za kućnu teretanu (bučice, šipka, kabeltower, klupa, power tower). Push = prsa, ramena, triceps. Pull = leđa, biceps. Legs = noge, stražnjica, core.",de:"Klassisches PPL für das Home-Gym (Kurzhanteln, Langhantel, Kabelzug, Bank, Power Tower). Push = Brust, Schultern, Trizeps. Pull = Rücken, Bizeps. Legs = Beine, Gesäß, Core."},
@@ -1059,7 +1059,7 @@ const PROGRAMS = {
 
   ppl_dumbbell:{
     section:"general", medical:false, icon:"🏠",
-    name:{hr:"PPL — Samo bučice", de:"PPL — Nur Kurzhanteln"},
+    name:{hr:"Split program — samo bučice", de:"Split — nur Kurzhanteln"},
     meta:{hr:"Samo bučice · 3× tjedno · snaga", de:"Nur Kurzhanteln · 3×/Woche · Kraft"},
     tag:{hr:"BUČICE", de:"KURZHANTELN"},
     intro:{hr:"PPL s parom bučica. Bez šipke, sajle ni klupe — sve na podu ili uz stolac.",de:"PPL nur mit Kurzhanteln. Kein Barbell, kein Kabel, keine Bank — alles am Boden oder mit Stuhl."},
@@ -1285,7 +1285,7 @@ const PROGRAMS = {
 
   ppl_phase1:{
     section:"general", medical:false, icon:"⚡",
-    name:{hr:"PPL Faza 1 — Oporavak", de:"PPL Phase 1 — Erholung"},
+    name:{hr:"Split — povratak treningu (Faza 1)", de:"Split — Rückkehr (Phase 1)"},
     meta:{hr:"Kućna teretana · 3× tjedno · tehnika", de:"Home-Gym · 3×/Woche · Technik"},
     tag:{hr:"PPL · FAZA 1", de:"PPL · PHASE 1"},
     intro:{
@@ -1388,7 +1388,7 @@ const PROGRAMS = {
 
   ppl_phase2:{
     section:"general", medical:false, icon:"🔥",
-    name:{hr:"PPL Faza 2 — Progresija", de:"PPL Phase 2 — Progression"},
+    name:{hr:"Split — povratak treningu (Faza 2)", de:"Split — Rückkehr (Phase 2)"},
     meta:{hr:"Kućna teretana · 3× tjedno · progresija", de:"Home-Gym · 3×/Woche · Progression"},
     tag:{hr:"PPL · FAZA 2", de:"PPL · PHASE 2"},
     intro:{
@@ -1483,7 +1483,7 @@ const PROGRAMS = {
 
   ppl_phase3:{
     section:"general", medical:false, icon:"💥",
-    name:{hr:"PPL Faza 3 — Intenzitet", de:"PPL Phase 3 — Intensität"},
+    name:{hr:"Split — povratak treningu (Faza 3)", de:"Split — Rückkehr (Phase 3)"},
     meta:{hr:"Kućna teretana · 3× tjedno · maksimalni intenzitet", de:"Home-Gym · 3×/Woche · maximale Intensität"},
     tag:{hr:"PPL · FAZA 3", de:"PPL · PHASE 3"},
     intro:{
@@ -1700,18 +1700,19 @@ function rerenderCurrent(){
 const CATEGORIES = {
   home_bw:{
     icon:'\uD83C\uDFE0',
-    name:{hr:'Kod ku\u0107e', de:'Zu Hause'},
-    desc:{hr:'Bez opreme', de:'Ohne Ger\u00e4te'},
+    name:{hr:'Kod ku\u0107e — bez opreme', de:'Zu Hause — ohne Geräte'},
+    desc:{hr:'Bodyweight \u00b7 istezanje', de:'Bodyweight \u00b7 Dehnen'},
     programs:['bw_beginner','daily_stretch'],
     medical:false
   },
-  gym:{
-    icon:'\uD83C\uDFCB\uFE0F',
-    name:{hr:'Teretana', de:'Fitnessstudio'},
-    desc:{hr:'\u0160ipka \u00b7 bu\u010dice \u00b7 sajla', de:'Langhantel \u00b7 Kurzhanteln'},
-    programs:['ppl','ppl_dumbbell','dumbbell_home'],
+  home_eq:{
+    icon:'\uD83D\uDCAA',
+    name:{hr:'Kod ku\u0107e — s opremom', de:'Zu Hause — mit Geräten'},
+    desc:{hr:'Bu\u010dice \u00b7 \u0161ipka \u00b7 klupa', de:'Kurzhanteln \u00b7 Langhantel \u00b7 Bank'},
+    programs:['ppl','ppl_dumbbell','dumbbell_home','ppl_phase1','ppl_phase2','ppl_phase3'],
     medical:false
   },
+
   fat_loss:{
     icon:'\uD83D\uDD25',
     name:{hr:'Mr\u0161avljenje', de:'Abnehmen'},
@@ -1742,8 +1743,8 @@ const CATEGORIES = {
   },
   recovery:{
     icon:'\uD83D\uDD04',
-    name:{hr:'Oporavak', de:'Erholung'},
-    desc:{hr:'PPL 6-mj. rehabilitacija', de:'PPL 6-Mon. Reha'},
+    name:{hr:'Povratak treningu', de:'Rückkehr zum Training'},
+    desc:{hr:'6-mj. program oporavka', de:'6-Mon. Erholungsprogramm'},
     programs:['ppl_phase1','ppl_phase2','ppl_phase3'],
     medical:false
   }
