@@ -2200,6 +2200,15 @@ async function buildProgress(){
    ============================================================ */
 let _stopwatches = {};
 
+function parseTargetSec(str){
+  if(!str) return 0;
+  const m = String(str).match(/(\d+)\s*(sek|min|s\b)/i);
+  if(!m) return 0;
+  let n = parseInt(m[1],10);
+  if(/min/i.test(m[2])) n*=60;
+  return n;
+}
+
 function startStopwatch(wid, targetSec){
   // If already running, stop it
   if(_stopwatches[wid] && _stopwatches[wid].running){
@@ -2216,6 +2225,7 @@ function startStopwatch(wid, targetSec){
   startBtn.textContent='⏹ STOP';
   startBtn.style.background='var(--red)';
   startBtn.style.color='#fff';
+  playStartBeep();
 
   const startTime = Date.now();
   _stopwatches[wid] = { running: true, startTime, targetSec };
@@ -2285,13 +2295,15 @@ function startExStopwatch(exId, si, side, repsStr){
         if(okBtn && !okBtn.classList.contains('done')) toggleSet(exId, si);
       }
     }
-    if(elapsed > 0) playBeep();
+    if(elapsed > 0 && !_stopwatches[swKey].targetBeeped) playBeep();
     return;
   }
 
   // START
   const startTime = Date.now();
-  _stopwatches[swKey] = { running: true, startTime };
+  const targetSec = parseTargetSec(repsStr);
+  _stopwatches[swKey] = { running: true, startTime, targetSec, targetBeeped:false };
+  playStartBeep();
   btn.textContent = (side ? '⏹ '+side+': 0s' : '⏹ 0s');
   btn.style.background = 'var(--red-soft)';
   btn.style.color = 'var(--red)';
@@ -2300,6 +2312,11 @@ function startExStopwatch(exId, si, side, repsStr){
   _stopwatches[swKey].interval = setInterval(()=>{
     const elapsed = Math.floor((Date.now() - startTime) / 1000);
     btn.textContent = (side ? '⏹ '+side+': '+elapsed+'s' : '⏹ '+elapsed+'s');
+    if(targetSec>0 && elapsed>=targetSec && !_stopwatches[swKey].targetBeeped){
+      _stopwatches[swKey].targetBeeped = true;
+      playBeep();
+      navigator.vibrate&&navigator.vibrate([200,100,200]);
+    }
   }, 200);
 }
 
