@@ -1961,7 +1961,7 @@ async function openSession(dayIdx, keepScreen){
         html+=`<div class="check-item" id="${wid}">
           <div class="check-box" id="${wid}_box">✓</div>
           <div class="check-text" style="flex:1">
-            ${w.n[LANG]}<span class="cs">${w.d[LANG]}</span>
+            ${w.n[LANG]}<span class="cs">${w.d[LANG]}</span>${perSide?'<span style="display:inline-block;margin-left:6px;font-size:12.5px;color:var(--gold);font-weight:700">↔ 2 strane</span>':''}
             <div id="${wid}_stopwatch" style="display:none; margin-top:6px; display:none">
               <span style="font-family:'Oswald',sans-serif; font-size:22px; color:var(--gold-dark)" id="${wid}_elapsed">0s</span>
               <span style="font-size:11px; color:var(--ink-faint)"> / ${totalSec}s</span>
@@ -2078,7 +2078,7 @@ async function openSession(dayIdx, keepScreen){
         const sides2 = perSide2 ? 2 : 1;
         html+=`<div class="check-item" id="${sid}">
           <div class="check-box" id="${sid}_box">✓</div>
-          <div class="check-text" style="flex:1">${s.n[LANG]}<span class="cs">${s.d[LANG]}</span>
+          <div class="check-text" style="flex:1">${s.n[LANG]}<span class="cs">${s.d[LANG]}</span>${perSide2?'<span style="display:inline-block;margin-left:6px;font-size:12.5px;color:var(--gold);font-weight:700">↔ 2 strane</span>':''}
             <div id="${sid}_stopwatch" style="display:none"><span style="font-family:'Oswald',sans-serif;font-size:18px;color:var(--gold-dark)" id="${sid}_elapsed">0s</span><span id="${sid}_side" style="display:none; margin-left:8px; font-family:'Oswald',sans-serif; font-size:14px; color:var(--red)"></span></div>
           </div>
           <div style="display:flex;gap:6px;align-items:center">
@@ -2334,7 +2334,7 @@ function startStopwatch(wid, targetSec, sides){
 
   // Show stopwatch display
   if(swDiv) swDiv.style.display='block';
-  startBtn.textContent='⏹ STOP';
+  startBtn.textContent = sides>1 ? '⏹ 1. STR.' : '⏹ STOP';
   startBtn.style.background='var(--red)';
   startBtn.style.color='#fff';
   playStartBeep();
@@ -2355,6 +2355,7 @@ function startStopwatch(wid, targetSec, sides){
         sw.startTime = Date.now();
         if(elapsedEl) elapsedEl.textContent = '0s';
         if(sideEl) sideEl.textContent = sw.side+'/'+sw.sides+'. strana';
+        if(startBtn) startBtn.textContent = '⏹ '+sw.side+'. STR.';
       } else {
         stopStopwatch(wid, elapsed);
       }
