@@ -83,10 +83,10 @@
 
 <style>
 :root{
-  --gold:#dcb74e; --gold-dark:#a8861a; --gold-soft:#efe2bf;
-  --ink:#f1ebde; --ink-soft:#b6ad9b; --ink-faint:#8a8170;
-  --ink-deep:#16130e;
-  --bg:#14120e; --card:#211d16; --card-2:#2a2519; --line:#332d22;
+  --gold:#e0bd57; --gold-dark:#a8861a; --gold-soft:#efe2bf;
+  --ink:#f4efe6; --ink-soft:#c5bcab; --ink-faint:#9a9180;
+  --ink-deep:#1a1610;
+  --bg:#211e18; --card:#2e2a21; --card-2:#3b3529; --line:#4a4234;
   --green:#5bbd7e; --green-soft:#e6f2ea;
   --red:#e0594b; --red-soft:#fae8e6; --amber:#e6a02b; --amber-soft:#fdf1dc;
 }
@@ -98,7 +98,7 @@ body{
     var(--bg);
   background-attachment:fixed;
   color:var(--ink);
-  font-family:'Source Sans 3',sans-serif; font-weight:400;
+  font-family:'Source Sans 3',sans-serif; font-weight:400; font-size:16.5px;
   min-height:100vh; overflow-x:hidden;
   padding-bottom:env(safe-area-inset-bottom);
   -webkit-font-smoothing:antialiased;
@@ -197,7 +197,7 @@ a{text-decoration:none; color:inherit}
 .hero-mark{ font-size:13px; letter-spacing:5px; color:var(--gold-dark); font-weight:700; text-transform:uppercase; margin-bottom:6px }
 .hero-title{ font-family:'Oswald',sans-serif; font-weight:700; font-size:33px; letter-spacing:1px; line-height:1; color:var(--ink) }
 .hero-title span{color:var(--gold)}
-.hero-desc{font-size:14px; color:var(--ink-soft); margin-top:10px; line-height:1.5; max-width:340px; margin-left:auto; margin-right:auto}
+.hero-desc{font-size:15.5px; color:var(--ink-soft); margin-top:10px; line-height:1.5; max-width:340px; margin-left:auto; margin-right:auto}
 
 .wrap{max-width:520px; margin:0 auto; padding:18px 16px 80px}
 
@@ -224,8 +224,8 @@ a{text-decoration:none; color:inherit}
 .prog-icon{ width:50px; height:50px; border-radius:13px; flex-shrink:0; background:var(--gold-soft); display:flex; align-items:center; justify-content:center; font-size:25px }
 .prog-icon.med{background:var(--red-soft)}
 .prog-body{flex:1; min-width:0}
-.prog-name{font-family:'Oswald',sans-serif; font-weight:600; font-size:17px; letter-spacing:.3px; line-height:1.1}
-.prog-meta{font-size:12.5px; color:var(--ink-faint); margin-top:3px; line-height:1.35}
+.prog-name{font-family:'Oswald',sans-serif; font-weight:600; font-size:19px; letter-spacing:.3px; line-height:1.1}
+.prog-meta{font-size:14px; color:var(--ink-faint); margin-top:3px; line-height:1.35}
 .prog-tag{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; padding:3px 7px; border-radius:6px; margin-top:7px; background:var(--gold-soft); color:var(--gold-dark) }
 .prog-tag.med{background:var(--red-soft); color:var(--red)}
 .prog-tag.soon{background:var(--card-2); color:var(--ink-faint)}
@@ -257,15 +257,15 @@ a{text-decoration:none; color:inherit}
 .day-sub{font-size:12px; color:var(--ink-faint); margin-top:2px}
 
 /* SESSION */
-.intro-text{font-size:13.5px; line-height:1.55; color:var(--ink-soft); margin-bottom:16px; padding:0 2px}
-.block-label{ font-family:'Oswald',sans-serif; font-weight:600; font-size:13px; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold-dark); margin:20px 2px 10px }
+.intro-text{font-size:15.5px; line-height:1.55; color:var(--ink-soft); margin-bottom:16px; padding:0 2px}
+.block-label{ font-family:'Oswald',sans-serif; font-weight:600; font-size:15px; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold-dark); margin:20px 2px 10px }
 
 /* WARMUP / STRETCH */
 .check-item{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:13px 14px; margin-bottom:8px; display:flex; align-items:center; gap:12px; transition:all .15s }
 .check-item.done{background:var(--green-soft); border-color:#c5e3cf}
 .check-box{ width:24px; height:24px; border-radius:8px; border:2px solid var(--line); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:15px; color:#fff; transition:all .15s }
 .check-item.done .check-box{background:var(--green); border-color:var(--green)}
-.check-text{flex:1; font-size:14px; line-height:1.3}
+.check-text{flex:1; font-size:16.5px; line-height:1.3}
 .check-text .cs{display:block; font-size:11.5px; color:var(--ink-faint); margin-top:1px}
 .check-item.done .check-text{color:var(--green)}
 .yt-link{ width:34px; height:34px; border-radius:9px; background:var(--gold-soft); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:15px; color:var(--gold-dark) }
@@ -275,32 +275,32 @@ a{text-decoration:none; color:inherit}
 .ex-head{display:flex; align-items:flex-start; gap:11px; margin-bottom:12px}
 .ex-num{ width:30px; height:30px; border-radius:9px; background:var(--gold-soft); color:var(--gold-dark); font-family:'Oswald',sans-serif; font-weight:600; font-size:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0 }
 .ex-titles{flex:1; min-width:0}
-.ex-name{font-family:'Oswald',sans-serif; font-weight:600; font-size:16px; letter-spacing:.2px; line-height:1.15}
-.ex-target{font-size:12px; color:var(--ink-faint); margin-top:2px}
+.ex-name{font-family:'Oswald',sans-serif; font-weight:600; font-size:19px; letter-spacing:.2px; line-height:1.15}
+.ex-target{font-size:14px; color:var(--ink-faint); margin-top:2px}
 .ex-yt{ width:36px; height:36px; border-radius:10px; background:rgba(224,89,75,.16); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:16px; color:var(--red) }
-.ex-scheme{ font-size:12px; color:var(--ink-soft); background:var(--bg); border:1px solid var(--line); border-radius:9px; padding:8px 11px; margin-bottom:11px; display:flex; justify-content:space-between; align-items:center }
-.ex-scheme b{font-family:'Oswald',sans-serif; color:var(--gold-dark); font-size:13px}
-.ex-cue{font-size:12px; line-height:1.45; color:var(--ink-soft); margin-bottom:11px; padding:0 2px}
+.ex-scheme{ font-size:14.5px; color:var(--ink-soft); background:var(--bg); border:1px solid var(--line); border-radius:9px; padding:8px 11px; margin-bottom:11px; display:flex; justify-content:space-between; align-items:center }
+.ex-scheme b{font-family:'Oswald',sans-serif; color:var(--gold-dark); font-size:16px}
+.ex-cue{font-size:14.5px; line-height:1.45; color:var(--ink-soft); margin-bottom:11px; padding:0 2px}
 .ex-cue::before{content:'💡 '}
 
 /* SET ROWS */
-.set-head{display:flex; gap:8px; padding:0 4px 6px; font-size:10.5px; font-weight:700; letter-spacing:.5px; color:var(--ink-faint); text-transform:uppercase}
-.set-head .sh-set{width:34px; text-align:center}
+.set-head{display:flex; gap:8px; padding:0 4px 6px; font-size:12.5px; font-weight:700; letter-spacing:.5px; color:var(--ink-faint); text-transform:uppercase}
+.set-head .sh-set{width:38px; text-align:center}
 .set-head .sh-prev{flex:1; text-align:center}
-.set-head .sh-kg{width:62px; text-align:center}
-.set-head .sh-rep{width:62px; text-align:center}
+.set-head .sh-kg{width:68px; text-align:center}
+.set-head .sh-rep{width:68px; text-align:center}
 .set-head .sh-ok{width:36px}
 .set-row{display:flex; gap:8px; align-items:center; margin-bottom:7px}
-.set-idx{ width:34px; height:38px; border-radius:9px; background:var(--bg); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-family:'Oswald',sans-serif; font-weight:600; font-size:14px; color:var(--ink-soft); flex-shrink:0 }
+.set-idx{ width:38px; height:46px; border-radius:9px; background:var(--bg); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-family:'Oswald',sans-serif; font-weight:600; font-size:17px; color:var(--ink-soft); flex-shrink:0 }
 .set-prev{flex:1; text-align:center; font-size:11.5px; color:var(--ink-faint); min-width:0}
-.set-inp{ width:62px; height:38px; border-radius:9px; border:1px solid var(--line); text-align:center; font-size:15px; font-weight:600; color:var(--ink); background:var(--card-2); transition:border-color .15s }
+.set-inp{ width:68px; height:46px; border-radius:9px; border:1px solid var(--line); text-align:center; font-size:18px; font-weight:600; color:var(--ink); background:var(--card-2); transition:border-color .15s }
 .set-inp:focus{border-color:var(--gold)}
 .set-inp.bw{background:var(--bg); color:var(--ink-faint); font-size:11px; font-weight:400}
 .set-ok{ width:36px; height:38px; border-radius:9px; border:2px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:16px; color:#fff; flex-shrink:0; transition:all .15s }
 .set-ok.done{background:var(--green); border-color:var(--green)}
 
 /* REST BTN */
-.rest-btn{ width:100%; margin-top:5px; padding:11px; border-radius:11px; background:var(--ink-deep); color:var(--gold); font-family:'Oswald',sans-serif; font-weight:600; font-size:13px; letter-spacing:1px; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:8px; transition:transform .1s }
+.rest-btn{ width:100%; margin-top:5px; padding:11px; border-radius:11px; background:var(--ink-deep); color:var(--gold); font-family:'Oswald',sans-serif; font-weight:600; font-size:15px; letter-spacing:1px; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:8px; transition:transform .1s }
 .rest-btn:active{transform:scale(.97)}
 .rest-sm{margin-top:3px; margin-bottom:10px; padding:9px; font-size:12px}
 
@@ -327,10 +327,10 @@ a{text-decoration:none; color:inherit}
 .stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:11px; margin-bottom:18px}
 .stat-card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; text-align:center}
 .stat-num{font-family:'Oswald',sans-serif; font-weight:700; font-size:30px; color:var(--gold-dark); line-height:1}
-.stat-lbl{font-size:11px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.5px; margin-top:5px}
+.stat-lbl{font-size:12.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.5px; margin-top:5px}
 .pr-item{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:13px 15px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center}
-.pr-name{font-size:14px; font-weight:600}
-.pr-val{font-family:'Oswald',sans-serif; font-weight:600; font-size:15px; color:var(--gold-dark)}
+.pr-name{font-size:16px; font-weight:600}
+.pr-val{font-family:'Oswald',sans-serif; font-weight:600; font-size:17px; color:var(--gold-dark)}
 .empty{text-align:center; padding:40px 20px; color:var(--ink-faint)}
 .empty .ic{font-size:42px; margin-bottom:12px; opacity:.5}
 .empty p{font-size:14px; line-height:1.5}
@@ -402,6 +402,8 @@ a{text-decoration:none; color:inherit}
 .hero-title{text-shadow:0 2px 18px rgba(220,183,78,.18)}
 .finish-btn,.login-submit,.save-btn,.celeb-btn{box-shadow:0 8px 26px rgba(220,183,78,.28)}
 .set-inp:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(220,183,78,.15)}
+.rest-btn{border:1px solid rgba(224,189,87,.22)}
+.set-inp::placeholder{color:var(--ink-faint); opacity:1}
 /* CATEGORY GRID */
 .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px}
 .cat-card{
@@ -557,23 +559,23 @@ a{text-decoration:none; color:inherit}
 </div>
 
 <!-- MINI TIMER (floating) -->
-<div id="timerOverlay" style="display:none; position:fixed; bottom:80px; right:14px; z-index:300; background:#1c1c1c; border-radius:18px; padding:12px 14px; flex-direction:column; align-items:center; box-shadow:0 6px 24px rgba(0,0,0,.5); min-width:150px;">
-  <div style="font-family:'Oswald',sans-serif; color:#c9a227; font-size:10px; letter-spacing:2px; text-transform:uppercase; margin-bottom:6px" data-i18n="rest_label">Odmor</div>
-  <div style="position:relative; width:80px; height:80px; margin-bottom:8px; flex-shrink:0">
-    <svg width="80" height="80" style="transform:rotate(-90deg)">
+<div id="timerOverlay" style="display:none; position:fixed; bottom:90px; right:14px; z-index:300; background:#211d16; border:1px solid rgba(224,189,87,.35); border-radius:20px; padding:16px 18px; flex-direction:column; align-items:center; box-shadow:0 14px 44px rgba(0,0,0,.6); min-width:200px; max-width:92vw;">
+  <div style="font-family:'Oswald',sans-serif; color:#e0bd57; font-size:13px; letter-spacing:3px; text-transform:uppercase; margin-bottom:10px" data-i18n="rest_label">Odmor</div>
+  <div style="position:relative; width:118px; height:118px; margin-bottom:12px; flex-shrink:0">
+    <svg width="118" height="118" viewBox="0 0 80 80" style="transform:rotate(-90deg)">
       <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="5"/>
-      <circle id="timerProgress" cx="40" cy="40" r="34" fill="none" stroke="#c9a227" stroke-width="5" stroke-linecap="round" stroke-dasharray="213.6" stroke-dashoffset="0"/>
+      <circle id="timerProgress" cx="40" cy="40" r="34" fill="none" stroke="#e0bd57" stroke-width="5" stroke-linecap="round" stroke-dasharray="213.6" stroke-dashoffset="0"/>
     </svg>
-    <div id="timerNum" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Oswald',sans-serif; font-weight:700; font-size:26px; color:#fff">90</div>
+    <div id="timerNum" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Oswald',sans-serif; font-weight:700; font-size:44px; color:#fff">90</div>
   </div>
-  <div style="display:flex; gap:5px; margin-bottom:8px">
-    <button id="pre60" onclick="setTimerPreset(60)" style="padding:5px 9px; border-radius:7px; background:rgba(255,255,255,.1); color:#fff; font-family:'Oswald',sans-serif; font-weight:600; font-size:12px; border:1px solid rgba(255,255,255,.15)">60s</button>
-    <button id="pre90" onclick="setTimerPreset(90)" style="padding:5px 9px; border-radius:7px; background:#c9a227; color:#1c1c1c; font-family:'Oswald',sans-serif; font-weight:600; font-size:12px; border:1px solid #c9a227">90s</button>
-    <button id="pre120" onclick="setTimerPreset(120)" style="padding:5px 9px; border-radius:7px; background:rgba(255,255,255,.1); color:#fff; font-family:'Oswald',sans-serif; font-weight:600; font-size:12px; border:1px solid rgba(255,255,255,.15)">120s</button>
+  <div style="display:flex; gap:8px; margin-bottom:12px">
+    <button id="pre60" onclick="setTimerPreset(60)" style="padding:9px 16px; border-radius:9px; background:rgba(255,255,255,.1); color:#fff; font-family:'Oswald',sans-serif; font-weight:600; font-size:16px; border:1px solid rgba(255,255,255,.15)">60s</button>
+    <button id="pre90" onclick="setTimerPreset(90)" style="padding:9px 16px; border-radius:9px; background:#e0bd57; color:#1c1c1c; font-family:'Oswald',sans-serif; font-weight:600; font-size:16px; border:1px solid #e0bd57">90s</button>
+    <button id="pre120" onclick="setTimerPreset(120)" style="padding:9px 16px; border-radius:9px; background:rgba(255,255,255,.1); color:#fff; font-family:'Oswald',sans-serif; font-weight:600; font-size:16px; border:1px solid rgba(255,255,255,.15)">120s</button>
   </div>
-  <div style="display:flex; gap:6px">
-    <button id="timerPause" onclick="toggleTimer()" style="padding:7px 12px; border-radius:8px; background:#c9a227; color:#1c1c1c; font-family:'Oswald',sans-serif; font-weight:700; font-size:11px; letter-spacing:.5px; text-transform:uppercase" data-i18n="t_pause">Pauza</button>
-    <button onclick="closeTimer()" style="padding:7px 12px; border-radius:8px; background:rgba(255,255,255,.12); color:#fff; font-family:'Oswald',sans-serif; font-weight:700; font-size:11px; letter-spacing:.5px; text-transform:uppercase" data-i18n="t_close">Zatvori</button>
+  <div style="display:flex; gap:10px">
+    <button id="timerPause" onclick="toggleTimer()" style="padding:11px 20px; border-radius:10px; background:#e0bd57; color:#1c1c1c; font-family:'Oswald',sans-serif; font-weight:700; font-size:14px; letter-spacing:.5px; text-transform:uppercase" data-i18n="t_pause">Pauza</button>
+    <button onclick="closeTimer()" style="padding:11px 20px; border-radius:10px; background:rgba(255,255,255,.12); color:#fff; font-family:'Oswald',sans-serif; font-weight:700; font-size:14px; letter-spacing:.5px; text-transform:uppercase" data-i18n="t_close">Zatvori</button>
   </div>
 </div>
 
@@ -1947,6 +1949,8 @@ async function openSession(dayIdx, keepScreen){
         const secMatch = w.d[LANG].match(/(\d+)\s*sek/i);
         const minMatch = w.d[LANG].match(/(\d+)\s*min/i);
         const totalSec = secMatch ? parseInt(secMatch[1]) : (minMatch ? parseInt(minMatch[1])*60 : 30);
+        const perSide = /\/(strana|stranu|nogi|nogu|ruku|ruci|smjer|seite|bein)/i.test(w.d[LANG]);
+        const sides = perSide ? 2 : 1;
         html+=`<div class="check-item" id="${wid}">
           <div class="check-box" id="${wid}_box">✓</div>
           <div class="check-text" style="flex:1">
@@ -1954,10 +1958,11 @@ async function openSession(dayIdx, keepScreen){
             <div id="${wid}_stopwatch" style="display:none; margin-top:6px; display:none">
               <span style="font-family:'Oswald',sans-serif; font-size:22px; color:var(--gold-dark)" id="${wid}_elapsed">0s</span>
               <span style="font-size:11px; color:var(--ink-faint)"> / ${totalSec}s</span>
+              <span id="${wid}_side" style="display:none; margin-left:8px; font-family:'Oswald',sans-serif; font-size:14px; color:var(--red)"></span>
             </div>
           </div>
           <div style="display:flex; gap:6px; align-items:center">
-            <button onclick="event.stopPropagation(); startStopwatch('${wid}',${totalSec})" id="${wid}_startbtn"
+            <button onclick="event.stopPropagation(); startStopwatch('${wid}',${totalSec},${sides})" id="${wid}_startbtn"
               style="padding:7px 12px; border-radius:9px; background:var(--gold); color:var(--ink-deep); font-family:'Oswald',sans-serif; font-weight:700; font-size:12px; letter-spacing:.5px">
               ▶ START
             </button>
@@ -2062,13 +2067,15 @@ async function openSession(dayIdx, keepScreen){
         const secMatch2 = s.d[LANG].match(/(\d+)\s*sek/i);
         const minMatch2 = s.d[LANG].match(/(\d+)\s*min/i);
         const totalSec2 = secMatch2 ? parseInt(secMatch2[1]) : (minMatch2 ? parseInt(minMatch2[1])*60 : 30);
+        const perSide2 = /\/(strana|stranu|nogi|nogu|ruku|ruci|smjer|seite|bein)/i.test(s.d[LANG]);
+        const sides2 = perSide2 ? 2 : 1;
         html+=`<div class="check-item" id="${sid}">
           <div class="check-box" id="${sid}_box">✓</div>
           <div class="check-text" style="flex:1">${s.n[LANG]}<span class="cs">${s.d[LANG]}</span>
-            <div id="${sid}_stopwatch" style="display:none"><span style="font-family:'Oswald',sans-serif;font-size:18px;color:var(--gold-dark)" id="${sid}_elapsed">0s</span></div>
+            <div id="${sid}_stopwatch" style="display:none"><span style="font-family:'Oswald',sans-serif;font-size:18px;color:var(--gold-dark)" id="${sid}_elapsed">0s</span><span id="${sid}_side" style="display:none; margin-left:8px; font-family:'Oswald',sans-serif; font-size:14px; color:var(--red)"></span></div>
           </div>
           <div style="display:flex;gap:6px;align-items:center">
-            <button onclick="event.stopPropagation();startStopwatch('${sid}',${totalSec2})" id="${sid}_startbtn"
+            <button onclick="event.stopPropagation();startStopwatch('${sid}',${totalSec2},${sides2})" id="${sid}_startbtn"
               style="padding:6px 11px;border-radius:9px;background:var(--gold);color:var(--ink-deep);font-family:'Oswald',sans-serif;font-weight:700;font-size:12px">▶ START</button>
             <a class="yt-link" href="https://www.youtube.com/results?search_query=${encodeURIComponent(s.yt)}" target="_blank" onclick="event.stopPropagation()">▶</a>
           </div>
@@ -2305,7 +2312,8 @@ function parseTargetSec(str){
   return n;
 }
 
-function startStopwatch(wid, targetSec){
+function startStopwatch(wid, targetSec, sides){
+  sides = sides || 1;
   // If already running, stop it
   if(_stopwatches[wid] && _stopwatches[wid].running){
     stopStopwatch(wid);
@@ -2314,6 +2322,7 @@ function startStopwatch(wid, targetSec){
   const startBtn = document.getElementById(wid+'_startbtn');
   const elapsedEl = document.getElementById(wid+'_elapsed');
   const swDiv = document.getElementById(wid+'_stopwatch');
+  const sideEl = document.getElementById(wid+'_side');
   if(!startBtn) return;
 
   // Show stopwatch display
@@ -2323,15 +2332,25 @@ function startStopwatch(wid, targetSec){
   startBtn.style.color='#fff';
   playStartBeep();
 
-  const startTime = Date.now();
-  _stopwatches[wid] = { running: true, startTime, targetSec };
+  _stopwatches[wid] = { running: true, startTime: Date.now(), targetSec, sides, side: 1 };
+  if(sides>1 && sideEl){ sideEl.style.display='inline'; sideEl.textContent = '1/'+sides+'. strana'; }
 
   _stopwatches[wid].interval = setInterval(()=>{
-    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const sw = _stopwatches[wid];
+    if(!sw) return;
+    const elapsed = Math.floor((Date.now() - sw.startTime) / 1000);
     if(elapsedEl) elapsedEl.textContent = elapsed+'s';
-    // Auto-stop at target
     if(elapsed >= targetSec){
-      stopStopwatch(wid, elapsed);
+      if(sw.side < sw.sides){
+        // Switch to next side
+        playSwitchBeep();
+        sw.side++;
+        sw.startTime = Date.now();
+        if(elapsedEl) elapsedEl.textContent = '0s';
+        if(sideEl) sideEl.textContent = sw.side+'/'+sw.sides+'. strana';
+      } else {
+        stopStopwatch(wid, elapsed);
+      }
     }
   }, 200);
 }
@@ -2452,6 +2471,23 @@ function playBeep(){
     } catch(e){}
   }
   navigator.vibrate&&navigator.vibrate([200,100,200,100,200]);
+}
+
+function playSwitchBeep(){
+  const ctx = getAudioCtx();
+  if(ctx){
+    try {
+      [0,0.22].forEach(t=>{
+        const o=ctx.createOscillator(); const g=ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.type='sine'; o.frequency.value=700;
+        g.gain.setValueAtTime(0.38,ctx.currentTime+t);
+        g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+t+0.16);
+        o.start(ctx.currentTime+t); o.stop(ctx.currentTime+t+0.16);
+      });
+    } catch(e){}
+  }
+  navigator.vibrate&&navigator.vibrate([120,80,120]);
 }
 
 function playStartBeep(){
