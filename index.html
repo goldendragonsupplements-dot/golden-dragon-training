@@ -356,6 +356,24 @@ a{text-decoration:none; color:inherit}
 
 .toast{ position:fixed; bottom:90px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--ink); color:#fff; padding:13px 22px; border-radius:12px; font-size:14px; font-weight:500; z-index:200; opacity:0; transition:all .3s; box-shadow:0 8px 24px rgba(0,0,0,.2); white-space:nowrap }
 .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+.celeb-overlay{position:fixed; inset:0; z-index:500; display:none; align-items:center; justify-content:center; background:rgba(20,18,14,.78); backdrop-filter:blur(4px); overflow:hidden}
+.celeb-overlay.show{display:flex}
+.celeb-card{position:relative; z-index:2; width:86%; max-width:360px; background:linear-gradient(160deg,#fffdf7,#f7efdc); border:1px solid #e7d9b3; border-radius:22px; padding:30px 24px 26px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,.4); animation:celebPop .5s cubic-bezier(.18,.9,.32,1.3)}
+@keyframes celebPop{0%{transform:scale(.6) translateY(20px); opacity:0} 100%{transform:scale(1) translateY(0); opacity:1}}
+.celeb-emoji{font-size:58px; line-height:1; animation:celebBounce 1s ease infinite}
+@keyframes celebBounce{0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)}}
+.celeb-title{font-family:'Oswald',sans-serif; font-weight:700; font-size:30px; letter-spacing:1px; color:#1c1c1c; margin:10px 0 2px}
+.celeb-title span{color:#c9a227}
+.celeb-sub{font-size:15px; color:#6a5d3e; font-weight:600; margin-bottom:18px}
+.celeb-stats{display:flex; justify-content:center; gap:10px; margin-bottom:18px}
+.celeb-stat{flex:1; background:#fff; border:1px solid #ecdfbf; border-radius:14px; padding:12px 6px}
+.celeb-stat .v{font-family:'Oswald',sans-serif; font-weight:700; font-size:22px; color:#c9a227}
+.celeb-stat .l{font-size:10px; text-transform:uppercase; letter-spacing:1px; color:#9a8a63; margin-top:2px}
+.celeb-motiv{font-size:13px; color:#7a6c4a; line-height:1.5; margin-bottom:20px}
+.celeb-btn{width:100%; padding:15px; border:none; border-radius:14px; background:linear-gradient(135deg,#c9a227,#a8861a); color:#1c1c1c; font-family:'Oswald',sans-serif; font-weight:700; font-size:16px; letter-spacing:1px; cursor:pointer; box-shadow:0 6px 18px rgba(201,162,39,.4)}
+.celeb-btn:active{transform:scale(.97)}
+.confetti{position:absolute; top:-20px; width:11px; height:11px; opacity:.95; z-index:1; will-change:transform; animation:confFall linear forwards}
+@keyframes confFall{0%{transform:translateY(0) rotateZ(0deg); opacity:1} 100%{transform:translateY(105vh) rotateZ(720deg); opacity:.9}}
 /* CATEGORY GRID */
 .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px}
 .cat-card{
@@ -549,6 +567,16 @@ a{text-decoration:none; color:inherit}
 <!-- LOADING -->
 <div class="spinner-overlay" id="spinner"><div class="spinner"></div></div>
 <div class="toast" id="toast"></div>
+<div class="celeb-overlay" id="celebOverlay">
+  <div class="celeb-card">
+    <div class="celeb-emoji" id="celebEmoji">🎉</div>
+    <div class="celeb-title" id="celebTitle"></div>
+    <div class="celeb-sub" id="celebSub"></div>
+    <div class="celeb-stats" id="celebStats"></div>
+    <div class="celeb-motiv" id="celebMotiv"></div>
+    <button class="celeb-btn" id="celebBtn" onclick="closeCelebration()"></button>
+  </div>
+</div>
 <script>
 /* ============================================================
    AUTH
@@ -1590,6 +1618,7 @@ const I18N = {
     warmup:"Zagrijavanje", workout:"Vježbe", stretch:"Istezanje",
     set:"Serija", prev:"Prošli put", reps:"Pon.", start_rest:"Pokreni odmor",
     finish:"Završi trening", finished:"Trening završen! 💪",
+    celeb_title:"BRAVO!", celeb_sub:"Trening je gotov 💪", celeb_dur:"Trajanje", celeb_vol:"Volumen", celeb_sets:"Serija", celeb_cont:"NASTAVI", celeb_motiv:"Svaki trening te čini jačim. Nastavi tako! 🐉",
     workouts:"Treninga", volume:"Volumen (kg)", prs:"Osobni rekordi",
     no_data:"Još nema podataka. Završi prvi trening!",
     no_pr:"Završi vježbu s težinom da postaviš rekord.",
@@ -1608,6 +1637,7 @@ const I18N = {
     warmup:"Aufwärmen", workout:"Übungen", stretch:"Dehnen",
     set:"Satz", prev:"Letztes Mal", reps:"Wdh.", start_rest:"Pause starten",
     finish:"Training beenden", finished:"Training abgeschlossen! 💪",
+    celeb_title:"BRAVO!", celeb_sub:"Training geschafft 💪", celeb_dur:"Dauer", celeb_vol:"Volumen", celeb_sets:"Sätze", celeb_cont:"WEITER", celeb_motiv:"Jedes Training macht dich stärker. Weiter so! 🐉",
     workouts:"Trainings", volume:"Volumen (kg)", prs:"Persönliche Rekorde",
     no_data:"Noch keine Daten. Beende dein erstes Training!",
     no_pr:"Beende eine Übung mit Gewicht, um einen Rekord zu setzen.",
@@ -1921,6 +1951,13 @@ async function openSession(dayIdx, keepScreen){
     if(!sessionState[exId]){
       sessionState[exId]={sets:Array.from({length:ex.sets},()=>({kg:'',reps:'',done:false}))};
     }
+    const exRest = (()=>{
+      const cue = ex.cue ? (ex.cue.hr||'') : '';
+      const m = cue.match(/odmor[^\d]*(\d+)\s*sek/i);
+      if(m) return parseInt(m[1],10);
+      if(/bez odmora/i.test(cue)) return 30;
+      return ex.bw ? 60 : 90;
+    })();
     html+=`<div class="ex-card">
       <div class="ex-head">
         <div class="ex-num">${ei+1}</div>
@@ -1980,7 +2017,7 @@ async function openSession(dayIdx, keepScreen){
         })()}
         <button class="set-ok ${set.done?'done':''}" id="${exId}_ok_${si}" onclick="toggleSet('${exId}',${si})">✓</button>
       </div>
-      <button class="rest-btn rest-sm" onclick="openTimer()">⏱ ${t('start_rest')}</button>`;
+      <button class="rest-btn rest-sm" onclick="openTimer(${exRest})">⏱ ${t('start_rest')}</button>`;
     });
     html+=`</div>`;
   });
@@ -2038,11 +2075,13 @@ async function finishWorkout(){
   const day=p.days[currentDayIdx];
   const prs = await getPRs();
   let totalVol=0;
+  let doneSetsCount=0;
 
   day.exercises.forEach((ex,ei)=>{
     const exId='ex_'+currentDayIdx+'_'+ei;
     const st=sessionState[exId];
     if(!st) return;
+    doneSetsCount += st.sets.filter(s=>s.done).length;
     const doneSets=st.sets.filter(s=>s.done&&(s.reps||s.kg));
     if(doneSets.length){
       const prKey=currentProgram+'__'+ex.name.hr;
@@ -2082,8 +2121,7 @@ async function finishWorkout(){
   invalidateCache();
   showSpinner(false);
   setSyncDot('ok');
-  showToast(t('finished'));
-  setTimeout(()=>go('program'),900);
+  showCelebration(durationMin, Math.round(totalVol), doneSetsCount);
 }
 
 /* ============================================================
@@ -2091,10 +2129,19 @@ async function finishWorkout(){
    ============================================================ */
 let timerSeconds=90, timerTotal=90, timerInterval=null, timerRunning=false;
 const CIRC=213.6;
-function openTimer(){
+function openTimer(sec){
+  if(sec && sec>0){ timerSeconds=sec; timerTotal=sec; highlightPreset(sec); }
   document.getElementById('timerOverlay').style.display='flex';
   playStartBeep();
   resetTimerDisplay(); startTimer();
+}
+function highlightPreset(s){
+  ['pre60','pre90','pre120'].forEach(id=>{
+    const b=document.getElementById(id);
+    if(b){b.style.background='rgba(255,255,255,.1)'; b.style.color='#fff'; b.style.borderColor='rgba(255,255,255,.15)';}
+  });
+  const active=document.getElementById('pre'+s);
+  if(active){active.style.background='#c9a227'; active.style.color='#1c1c1c'; active.style.borderColor='#c9a227';}
 }
 function setTimerPreset(s){
   timerSeconds=s; timerTotal=s;
@@ -2374,6 +2421,63 @@ function playStartBeep(){
     } catch(e){}
   }
   navigator.vibrate&&navigator.vibrate(60);
+}
+
+function playFanfare(){
+  const ctx = getAudioCtx();
+  if(ctx){
+    try {
+      const notes=[523.25,659.25,783.99,1046.50];
+      notes.forEach((f,i)=>{
+        const t=i*0.13;
+        const o=ctx.createOscillator(); const g=ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.type='triangle'; o.frequency.value=f;
+        g.gain.setValueAtTime(0.0001,ctx.currentTime+t);
+        g.gain.exponentialRampToValueAtTime(0.4,ctx.currentTime+t+0.03);
+        g.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+t+0.32);
+        o.start(ctx.currentTime+t); o.stop(ctx.currentTime+t+0.34);
+      });
+    } catch(e){}
+  }
+  navigator.vibrate&&navigator.vibrate([60,40,60,40,120]);
+}
+
+function fireConfetti(){
+  const overlay=document.getElementById('celebOverlay');
+  const colors=['#c9a227','#a8861a','#f5edd0','#ffffff','#e0b84a','#1c1c1c'];
+  for(let i=0;i<70;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'%';
+    c.style.background=colors[i%colors.length];
+    if(Math.random()>0.5) c.style.borderRadius='50%';
+    const dur=2.2+Math.random()*1.8;
+    c.style.animationDuration=dur+'s';
+    c.style.animationDelay=(Math.random()*0.6)+'s';
+    c.style.width=c.style.height=(7+Math.random()*8)+'px';
+    overlay.appendChild(c);
+    setTimeout(()=>c.remove(),(dur+0.7)*1000);
+  }
+}
+
+function showCelebration(durationMin, totalVol, doneSets){
+  document.getElementById('celebTitle').innerHTML = t('celeb_title').replace(/(.{3})$/,'<span>$1</span>');
+  document.getElementById('celebSub').textContent = t('celeb_sub');
+  document.getElementById('celebMotiv').textContent = t('celeb_motiv');
+  document.getElementById('celebBtn').textContent = t('celeb_cont');
+  let stats = `<div class="celeb-stat"><div class="v">${durationMin}</div><div class="l">min · ${t('celeb_dur')}</div></div>`;
+  stats += `<div class="celeb-stat"><div class="v">${doneSets}</div><div class="l">${t('celeb_sets')}</div></div>`;
+  if(totalVol>0) stats += `<div class="celeb-stat"><div class="v">${totalVol}</div><div class="l">kg · ${t('celeb_vol')}</div></div>`;
+  document.getElementById('celebStats').innerHTML = stats;
+  document.getElementById('celebOverlay').classList.add('show');
+  fireConfetti();
+  playFanfare();
+}
+
+function closeCelebration(){
+  document.getElementById('celebOverlay').classList.remove('show');
+  go('program');
 }
 
 function showToast(msg){
