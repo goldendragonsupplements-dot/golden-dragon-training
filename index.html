@@ -83,15 +83,21 @@
 
 <style>
 :root{
-  --gold:#c9a227; --gold-dark:#a8861a; --gold-soft:#f5edd2;
-  --ink:#1c1c1c; --ink-soft:#555; --ink-faint:#8a8a8a;
-  --bg:#faf8f3; --card:#ffffff; --line:#ece7da;
-  --green:#3f8f5b; --green-soft:#e6f2ea;
-  --red:#c0392b; --red-soft:#fae8e6; --amber:#e08e00; --amber-soft:#fdf1dc;
+  --gold:#dcb74e; --gold-dark:#a8861a; --gold-soft:#efe2bf;
+  --ink:#f1ebde; --ink-soft:#b6ad9b; --ink-faint:#8a8170;
+  --ink-deep:#16130e;
+  --bg:#14120e; --card:#211d16; --card-2:#2a2519; --line:#332d22;
+  --green:#5bbd7e; --green-soft:#e6f2ea;
+  --red:#e0594b; --red-soft:#fae8e6; --amber:#e6a02b; --amber-soft:#fdf1dc;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{
-  background:var(--bg); color:var(--ink);
+  background:
+    radial-gradient(1200px 520px at 50% -160px, rgba(220,183,78,.10), rgba(220,183,78,0) 60%),
+    radial-gradient(900px 600px at 100% 0%, rgba(220,183,78,.05), rgba(220,183,78,0) 55%),
+    var(--bg);
+  background-attachment:fixed;
+  color:var(--ink);
   font-family:'Source Sans 3',sans-serif; font-weight:400;
   min-height:100vh; overflow-x:hidden;
   padding-bottom:env(safe-area-inset-bottom);
@@ -105,7 +111,7 @@ a{text-decoration:none; color:inherit}
 /* LOGIN SCREEN */
 #screen-login{
   position:fixed; inset:0; z-index:999;
-  background:var(--ink);
+  background:var(--ink-deep);
   display:none; flex-direction:column; align-items:center; justify-content:center;
   padding:30px 24px;
 }
@@ -117,7 +123,7 @@ a{text-decoration:none; color:inherit}
 .login-logo p{ font-size:13px; color:rgba(255,255,255,.4); margin-top:8px }
 .login-tabs{ display:flex; background:rgba(255,255,255,.08); border-radius:12px; padding:4px; margin-bottom:24px; width:100%; max-width:360px }
 .login-tabs button{ flex:1; padding:10px; border-radius:9px; font-family:'Oswald',sans-serif; font-weight:600; font-size:14px; letter-spacing:.5px; color:rgba(255,255,255,.5); transition:all .2s }
-.login-tabs button.on{ background:var(--gold); color:var(--ink) }
+.login-tabs button.on{ background:var(--gold); color:var(--ink-deep) }
 .login-form{ width:100%; max-width:360px }
 .login-inp{
   width:100%; padding:14px 16px; border-radius:12px; margin-bottom:12px;
@@ -130,7 +136,7 @@ a{text-decoration:none; color:inherit}
 .login-submit{
   width:100%; padding:15px; border-radius:12px; margin-top:4px;
   background:linear-gradient(135deg,var(--gold),var(--gold-dark));
-  color:var(--ink); font-family:'Oswald',sans-serif; font-weight:700;
+  color:var(--ink-deep); font-family:'Oswald',sans-serif; font-weight:700;
   font-size:16px; letter-spacing:1px; text-transform:uppercase;
   box-shadow:0 6px 20px rgba(201,162,39,.3); transition:transform .1s;
 }
@@ -157,7 +163,7 @@ a{text-decoration:none; color:inherit}
 /* HEADER */
 .topbar{
   position:sticky; top:0; z-index:50;
-  background:rgba(250,248,243,.92); backdrop-filter:blur(10px);
+  background:rgba(20,18,14,.82); backdrop-filter:blur(12px) saturate(1.1);
   border-bottom:1px solid var(--line);
   padding:calc(env(safe-area-inset-top) + 12px) 16px 12px;
   display:flex; align-items:center; gap:12px;
@@ -180,7 +186,7 @@ a{text-decoration:none; color:inherit}
   padding:7px 11px; font-size:12px; font-weight:700; color:var(--ink-faint);
   letter-spacing:.5px; transition:all .15s;
 }
-.lang-toggle button.on{background:var(--gold); color:#fff}
+.lang-toggle button.on{background:var(--gold); color:var(--ink-deep)}
 
 /* HOME HERO */
 .hero{
@@ -222,7 +228,7 @@ a{text-decoration:none; color:inherit}
 .prog-meta{font-size:12.5px; color:var(--ink-faint); margin-top:3px; line-height:1.35}
 .prog-tag{ display:inline-block; font-size:9.5px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; padding:3px 7px; border-radius:6px; margin-top:7px; background:var(--gold-soft); color:var(--gold-dark) }
 .prog-tag.med{background:var(--red-soft); color:var(--red)}
-.prog-tag.soon{background:#eee; color:var(--ink-faint)}
+.prog-tag.soon{background:var(--card-2); color:var(--ink-faint)}
 .prog-arrow{font-size:22px; color:var(--ink-faint); flex-shrink:0}
 
 /* MEDICAL WARNING BANNER */
@@ -238,14 +244,14 @@ a{text-decoration:none; color:inherit}
 .disclaimer-box ul{margin:6px 0 8px 4px; list-style:none}
 .disclaimer-box li{font-size:12.5px; line-height:1.5; color:#7a3029; padding-left:16px; position:relative; margin-bottom:4px}
 .disclaimer-box li::before{content:'•'; position:absolute; left:3px; color:var(--red)}
-.accept-row{ display:flex; align-items:center; gap:10px; margin-top:12px; background:#fff; border:1px solid #eecac5; border-radius:11px; padding:12px }
+.accept-row{ display:flex; align-items:center; gap:10px; margin-top:12px; background:var(--card-2); border:1px solid var(--line); border-radius:11px; padding:12px }
 .accept-row input{width:21px; height:21px; accent-color:var(--red); flex-shrink:0}
 .accept-row label{font-size:12.5px; font-weight:600; color:#7a3029; line-height:1.4}
 
 /* WORKOUT DAY LIST */
 .day-card{ background:var(--card); border:1px solid var(--line); border-radius:15px; padding:15px 16px; margin-bottom:10px; display:flex; align-items:center; gap:13px; transition:transform .12s }
 .day-card:active{transform:scale(.985)}
-.day-num{ width:42px; height:42px; border-radius:12px; flex-shrink:0; background:var(--ink); color:var(--gold); display:flex; align-items:center; justify-content:center; font-family:'Oswald',sans-serif; font-weight:600; font-size:18px }
+.day-num{ width:42px; height:42px; border-radius:12px; flex-shrink:0; background:var(--ink-deep); color:var(--gold); display:flex; align-items:center; justify-content:center; font-family:'Oswald',sans-serif; font-weight:600; font-size:18px }
 .day-info{flex:1}
 .day-title{font-family:'Oswald',sans-serif; font-weight:600; font-size:16px; letter-spacing:.3px}
 .day-sub{font-size:12px; color:var(--ink-faint); margin-top:2px}
@@ -271,7 +277,7 @@ a{text-decoration:none; color:inherit}
 .ex-titles{flex:1; min-width:0}
 .ex-name{font-family:'Oswald',sans-serif; font-weight:600; font-size:16px; letter-spacing:.2px; line-height:1.15}
 .ex-target{font-size:12px; color:var(--ink-faint); margin-top:2px}
-.ex-yt{ width:36px; height:36px; border-radius:10px; background:#fde8e6; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:16px; color:var(--red) }
+.ex-yt{ width:36px; height:36px; border-radius:10px; background:rgba(224,89,75,.16); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:16px; color:var(--red) }
 .ex-scheme{ font-size:12px; color:var(--ink-soft); background:var(--bg); border:1px solid var(--line); border-radius:9px; padding:8px 11px; margin-bottom:11px; display:flex; justify-content:space-between; align-items:center }
 .ex-scheme b{font-family:'Oswald',sans-serif; color:var(--gold-dark); font-size:13px}
 .ex-cue{font-size:12px; line-height:1.45; color:var(--ink-soft); margin-bottom:11px; padding:0 2px}
@@ -287,14 +293,14 @@ a{text-decoration:none; color:inherit}
 .set-row{display:flex; gap:8px; align-items:center; margin-bottom:7px}
 .set-idx{ width:34px; height:38px; border-radius:9px; background:var(--bg); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-family:'Oswald',sans-serif; font-weight:600; font-size:14px; color:var(--ink-soft); flex-shrink:0 }
 .set-prev{flex:1; text-align:center; font-size:11.5px; color:var(--ink-faint); min-width:0}
-.set-inp{ width:62px; height:38px; border-radius:9px; border:1px solid var(--line); text-align:center; font-size:15px; font-weight:600; color:var(--ink); background:#fff; transition:border-color .15s }
+.set-inp{ width:62px; height:38px; border-radius:9px; border:1px solid var(--line); text-align:center; font-size:15px; font-weight:600; color:var(--ink); background:var(--card-2); transition:border-color .15s }
 .set-inp:focus{border-color:var(--gold)}
 .set-inp.bw{background:var(--bg); color:var(--ink-faint); font-size:11px; font-weight:400}
 .set-ok{ width:36px; height:38px; border-radius:9px; border:2px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:16px; color:#fff; flex-shrink:0; transition:all .15s }
 .set-ok.done{background:var(--green); border-color:var(--green)}
 
 /* REST BTN */
-.rest-btn{ width:100%; margin-top:5px; padding:11px; border-radius:11px; background:var(--ink); color:var(--gold); font-family:'Oswald',sans-serif; font-weight:600; font-size:13px; letter-spacing:1px; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:8px; transition:transform .1s }
+.rest-btn{ width:100%; margin-top:5px; padding:11px; border-radius:11px; background:var(--ink-deep); color:var(--gold); font-family:'Oswald',sans-serif; font-weight:600; font-size:13px; letter-spacing:1px; text-transform:uppercase; display:flex; align-items:center; justify-content:center; gap:8px; transition:transform .1s }
 .rest-btn:active{transform:scale(.97)}
 .rest-sm{margin-top:3px; margin-bottom:10px; padding:9px; font-size:12px}
 
@@ -307,10 +313,10 @@ a{text-decoration:none; color:inherit}
 .timer-num{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Oswald',sans-serif; font-weight:700; font-size:62px; color:#fff }
 .timer-presets{display:flex; gap:10px; margin-bottom:18px}
 .timer-presets button{ padding:11px 18px; border-radius:11px; background:rgba(255,255,255,.1); color:#fff; font-family:'Oswald',sans-serif; font-weight:600; font-size:15px; letter-spacing:.5px; border:1px solid rgba(255,255,255,.15) }
-.timer-presets button.on{background:var(--gold); border-color:var(--gold); color:var(--ink)}
+.timer-presets button.on{background:var(--gold); border-color:var(--gold); color:var(--ink-deep)}
 .timer-ctrl{display:flex; gap:12px}
 .timer-ctrl button{ padding:13px 26px; border-radius:12px; font-family:'Oswald',sans-serif; font-weight:600; font-size:15px; letter-spacing:1px; text-transform:uppercase }
-.timer-ctrl .pause{background:var(--gold); color:var(--ink)}
+.timer-ctrl .pause{background:var(--gold); color:var(--ink-deep)}
 .timer-ctrl .close{background:rgba(255,255,255,.12); color:#fff}
 
 /* FINISH BTN */
@@ -337,7 +343,7 @@ a{text-decoration:none; color:inherit}
 .input-group label{ font-size:12px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; color:var(--ink-faint); display:block; margin-bottom:6px }
 .input-group input{ width:100%; padding:13px 14px; border:1px solid var(--line); border-radius:12px; font-size:15px; color:var(--ink); background:var(--card); font-family:'Source Sans 3',sans-serif }
 .input-group input:focus{ border-color:var(--gold); outline:none }
-.save-btn{ width:100%; padding:14px; border-radius:12px; background:var(--gold); color:var(--ink); font-family:'Oswald',sans-serif; font-weight:700; font-size:15px; letter-spacing:1px; text-transform:uppercase; margin-top:6px; transition:transform .1s }
+.save-btn{ width:100%; padding:14px; border-radius:12px; background:var(--gold); color:var(--ink-deep); font-family:'Oswald',sans-serif; font-weight:700; font-size:15px; letter-spacing:1px; text-transform:uppercase; margin-top:6px; transition:transform .1s }
 .save-btn:active{ transform:scale(.98) }
 .logout-btn{ width:100%; padding:13px; border-radius:12px; border:1px solid var(--line); color:var(--red); font-size:14px; font-weight:600; margin-top:10px }
 .meas-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px }
@@ -348,13 +354,13 @@ a{text-decoration:none; color:inherit}
 @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.3} }
 
 /* BOTTOM NAV */
-.bottom-nav{ position:fixed; bottom:0; left:0; right:0; z-index:60; background:rgba(255,255,255,.96); backdrop-filter:blur(12px); border-top:1px solid var(--line); display:flex; padding:8px 0 calc(env(safe-area-inset-bottom) + 8px) }
+.bottom-nav{ position:fixed; bottom:0; left:0; right:0; z-index:60; background:rgba(20,18,14,.92); backdrop-filter:blur(14px); border-top:1px solid var(--line); display:flex; padding:8px 0 calc(env(safe-area-inset-bottom) + 8px) }
 .nav-btn{flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--ink-faint); transition:color .15s}
 .nav-btn.on{color:var(--gold-dark)}
 .nav-btn .ni{font-size:21px}
 .nav-btn .nl{font-size:10px; font-weight:600; letter-spacing:.3px}
 
-.toast{ position:fixed; bottom:90px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--ink); color:#fff; padding:13px 22px; border-radius:12px; font-size:14px; font-weight:500; z-index:200; opacity:0; transition:all .3s; box-shadow:0 8px 24px rgba(0,0,0,.2); white-space:nowrap }
+.toast{ position:fixed; bottom:90px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--ink-deep); color:#fff; padding:13px 22px; border-radius:12px; font-size:14px; font-weight:500; z-index:200; opacity:0; transition:all .3s; box-shadow:0 8px 24px rgba(0,0,0,.2); white-space:nowrap }
 .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
 .celeb-overlay{position:fixed; inset:0; z-index:500; display:none; align-items:center; justify-content:center; background:rgba(20,18,14,.78); backdrop-filter:blur(4px); overflow:hidden}
 .celeb-overlay.show{display:flex}
@@ -382,6 +388,20 @@ a{text-decoration:none; color:inherit}
 .celeb-btn:active{transform:scale(.97)}
 .confetti{position:absolute; top:-20px; width:11px; height:11px; opacity:.95; z-index:1; will-change:transform; animation:confFall linear forwards}
 @keyframes confFall{0%{transform:translateY(0) rotateZ(0deg); opacity:1} 100%{transform:translateY(105vh) rotateZ(720deg); opacity:.9}}
+/* PREMIUM DEPTH */
+.day-card,.ex-card,.check-item,.stat-card,.pr-item,.cat-card{
+  box-shadow:0 2px 14px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.025);
+  border-color:rgba(220,183,78,.13);
+}
+.cat-card{background:linear-gradient(180deg,#26211a,#1d1912)}
+.cat-card::after{box-shadow:0 0 14px rgba(220,183,78,.55)}
+.cat-card.med::after{box-shadow:0 0 14px rgba(224,89,75,.5)}
+.cat-card:active{transform:scale(.96);box-shadow:0 8px 26px rgba(0,0,0,.5)}
+.day-num{box-shadow:0 0 0 1px rgba(220,183,78,.25), 0 4px 12px rgba(0,0,0,.4)}
+.topbar-title{color:var(--ink)}
+.hero-title{text-shadow:0 2px 18px rgba(220,183,78,.18)}
+.finish-btn,.login-submit,.save-btn,.celeb-btn{box-shadow:0 8px 26px rgba(220,183,78,.28)}
+.set-inp:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(220,183,78,.15)}
 /* CATEGORY GRID */
 .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px}
 .cat-card{
@@ -401,7 +421,7 @@ a{text-decoration:none; color:inherit}
 .cat-back-lbl{font-family:'Oswald',sans-serif;font-weight:600;font-size:16px;color:var(--ink)}
 
 /* LOADING SPINNER */
-.spinner-overlay{ position:fixed; inset:0; z-index:500; background:rgba(250,248,243,.95); display:flex; align-items:center; justify-content:center }
+.spinner-overlay{ position:fixed; inset:0; z-index:500; background:rgba(20,18,14,.94); display:flex; align-items:center; justify-content:center }
 .spinner-overlay.show{ display:flex }
 .spinner{ width:44px; height:44px; border:3px solid var(--line); border-top-color:var(--gold); border-radius:50%; animation:spin .7s linear infinite }
 @keyframes spin{ to{transform:rotate(360deg)} }
@@ -1938,7 +1958,7 @@ async function openSession(dayIdx, keepScreen){
           </div>
           <div style="display:flex; gap:6px; align-items:center">
             <button onclick="event.stopPropagation(); startStopwatch('${wid}',${totalSec})" id="${wid}_startbtn"
-              style="padding:7px 12px; border-radius:9px; background:var(--gold); color:var(--ink); font-family:'Oswald',sans-serif; font-weight:700; font-size:12px; letter-spacing:.5px">
+              style="padding:7px 12px; border-radius:9px; background:var(--gold); color:var(--ink-deep); font-family:'Oswald',sans-serif; font-weight:700; font-size:12px; letter-spacing:.5px">
               ▶ START
             </button>
             <a class="yt-link" href="https://www.youtube.com/results?search_query=${encodeURIComponent(w.yt)}" target="_blank" onclick="event.stopPropagation()">▶</a>
@@ -2049,7 +2069,7 @@ async function openSession(dayIdx, keepScreen){
           </div>
           <div style="display:flex;gap:6px;align-items:center">
             <button onclick="event.stopPropagation();startStopwatch('${sid}',${totalSec2})" id="${sid}_startbtn"
-              style="padding:6px 11px;border-radius:9px;background:var(--gold);color:var(--ink);font-family:'Oswald',sans-serif;font-weight:700;font-size:12px">▶ START</button>
+              style="padding:6px 11px;border-radius:9px;background:var(--gold);color:var(--ink-deep);font-family:'Oswald',sans-serif;font-weight:700;font-size:12px">▶ START</button>
             <a class="yt-link" href="https://www.youtube.com/results?search_query=${encodeURIComponent(s.yt)}" target="_blank" onclick="event.stopPropagation()">▶</a>
           </div>
         </div>`;
