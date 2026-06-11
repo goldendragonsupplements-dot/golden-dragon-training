@@ -2329,37 +2329,51 @@ function toggleHistDetail(idx){
   if(chev) chev.textContent = open?'▼':'▲';
 }
 
-function playBeep(){
+let _audioCtx = null;
+function getAudioCtx(){
   try {
-    const ctx = new (window.AudioContext||window.webkitAudioContext)();
-    [0,0.3,0.6].forEach(t=>{
-      const o=ctx.createOscillator();
-      const g=ctx.createGain();
-      o.connect(g); g.connect(ctx.destination);
-      o.frequency.value=880;
-      o.type='sine';
-      g.gain.setValueAtTime(0.4,ctx.currentTime+t);
-      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+t+0.25);
-      o.start(ctx.currentTime+t);
-      o.stop(ctx.currentTime+t+0.25);
-    });
-  } catch(e){}
+    if(!_audioCtx) _audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    if(_audioCtx.state === 'suspended') _audioCtx.resume();
+    return _audioCtx;
+  } catch(e){ return null; }
+}
+
+function playBeep(){
+  const ctx = getAudioCtx();
+  if(ctx){
+    try {
+      [0,0.3,0.6].forEach(t=>{
+        const o=ctx.createOscillator();
+        const g=ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.frequency.value=880;
+        o.type='sine';
+        g.gain.setValueAtTime(0.4,ctx.currentTime+t);
+        g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+t+0.25);
+        o.start(ctx.currentTime+t);
+        o.stop(ctx.currentTime+t+0.25);
+      });
+    } catch(e){}
+  }
+  navigator.vibrate&&navigator.vibrate([200,100,200,100,200]);
 }
 
 function playStartBeep(){
-  try {
-    const ctx = new (window.AudioContext||window.webkitAudioContext)();
-    const o=ctx.createOscillator();
-    const g=ctx.createGain();
-    o.connect(g); g.connect(ctx.destination);
-    o.frequency.value=520;
-    o.type='sine';
-    g.gain.setValueAtTime(0.35,ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.18);
-    o.start(ctx.currentTime);
-    o.stop(ctx.currentTime+0.18);
-    navigator.vibrate&&navigator.vibrate(60);
-  } catch(e){}
+  const ctx = getAudioCtx();
+  if(ctx){
+    try {
+      const o=ctx.createOscillator();
+      const g=ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value=520;
+      o.type='sine';
+      g.gain.setValueAtTime(0.35,ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.18);
+      o.start(ctx.currentTime);
+      o.stop(ctx.currentTime+0.18);
+    } catch(e){}
+  }
+  navigator.vibrate&&navigator.vibrate(60);
 }
 
 function showToast(msg){
