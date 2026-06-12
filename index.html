@@ -720,8 +720,36 @@ async function fsLoadHistory(){
   try {
     const snap = await firebase.firestore().collection('users').doc(uid()).collection('history')
       .orderBy('date','desc').limit(30).get();
-    return snap.docs.map(d=>d.data());
+    return snap.docs.map(d=>({_id:d.id, ...d.data()}));
   } catch(e){ console.warn('history load error', e); return []; }
+}
+
+async function deleteHistEntry(docId){
+  const msg = LANG==='hr' ? 'Obrisati ovaj trening iz povijesti?' : 'Dieses Training aus dem Verlauf löschen?';
+  if(!confirm(msg)) return;
+  try {
+    showSpinner(true);
+    await firebase.firestore().collection('users').doc(uid()).collection('history').doc(docId).delete();
+    invalidateCache();
+    showSpinner(false);
+    showToast(LANG==='hr'?'Trening obrisan ✓':'Training gelöscht ✓');
+    buildProgress();
+  } catch(e){ showSpinner(false); console.warn('delete error', e); }
+}
+
+async function deletePR(prKey){
+  const msg = LANG==='hr' ? 'Obrisati ovaj rekord?' : 'Diesen Rekord löschen?';
+  if(!confirm(msg)) return;
+  try {
+    showSpinner(true);
+    const prs = await getPRs();
+    delete prs[prKey];
+    await fsSavePRs(prs);
+    invalidateCache();
+    showSpinner(false);
+    showToast(LANG==='hr'?'Rekord obrisan ✓':'Rekord gelöscht ✓');
+    buildProgress();
+  } catch(e){ showSpinner(false); console.warn('delete error', e); }
 }
 
 async function fsSavePRs(prs){
@@ -1961,18 +1989,24 @@ async function openSession(dayIdx, keepScreen){
         html+=`<div class="check-item" id="${wid}">
           <div class="check-box" id="${wid}_box">✓</div>
           <div class="check-text" style="flex:1">
-            ${w.n[LANG]}<span class="cs">${w.d[LANG]}</span>${perSide?'<span style="display:inline-block;margin-left:6px;font-size:12.5px;color:var(--gold);font-weight:700">↔ 2 strane</span>':''}
-            <div id="${wid}_stopwatch" style="display:none; margin-top:6px; display:none">
+            ${w.n[LANG]}<span class="cs">${w.d[LANG]}</span>
+            <div id="${wid}_stopwatch" style="display:none; margin-top:6px">
               <span style="font-family:'Oswald',sans-serif; font-size:22px; color:var(--gold-dark)" id="${wid}_elapsed">0s</span>
               <span style="font-size:11px; color:var(--ink-faint)"> / ${totalSec}s</span>
-              <span id="${wid}_side" style="display:none; margin-left:8px; font-family:'Oswald',sans-serif; font-size:14px; color:var(--red)"></span>
             </div>
+            ${perSide?`<div id="${wid}_S2_stopwatch" style="display:none; margin-top:2px">
+              <span style="font-family:'Oswald',sans-serif; font-size:22px; color:var(--gold-dark)" id="${wid}_S2_elapsed">0s</span>
+              <span style="font-size:11px; color:var(--ink-faint)"> / ${totalSec}s</span>
+            </div>`:''}
           </div>
           <div style="display:flex; gap:6px; align-items:center">
-            <button onclick="event.stopPropagation(); startStopwatch('${wid}',${totalSec},${sides})" id="${wid}_startbtn"
-              style="padding:7px 12px; border-radius:9px; background:var(--gold); color:var(--ink-deep); font-family:'Oswald',sans-serif; font-weight:700; font-size:12px; letter-spacing:.5px">
-              ▶ START
-            </button>
+            ${perSide
+              ? `<button onclick="event.stopPropagation(); startStopwatch('${wid}',${totalSec},1)" id="${wid}_startbtn"
+                  style="padding:9px 13px; border-radius:9px; background:var(--gold); color:var(--ink-deep); font-family:'Oswald',sans-serif; font-weight:700; font-size:13px; letter-spacing:.5px">▶ 1. STR</button>
+                 <button onclick="event.stopPropagation(); startStopwatch('${wid}_S2',${totalSec},1)" id="${wid}_S2_startbtn"
+                  style="padding:9px 13px; border-radius:9px; background:var(--gold); color:var(--ink-deep); font-family:'Oswald',sans-serif; font-weight:700; font-size:13px; letter-spacing:.5px">▶ 2. STR</button>`
+              : `<button onclick="event.stopPropagation(); startStopwatch('${wid}',${totalSec},1)" id="${wid}_startbtn"
+                  style="padding:9px 13px; border-radius:9px; background:var(--gold); color:var(--ink-deep); font-family:'Oswald',sans-serif; font-weight:700; font-size:13px; letter-spacing:.5px">▶ START</button>`}
             <a class="yt-link" href="https://www.youtube.com/results?search_query=${encodeURIComponent(w.yt)}" target="_blank" onclick="event.stopPropagation()">▶</a>
           </div>
         </div>`;
@@ -2078,12 +2112,18 @@ async function openSession(dayIdx, keepScreen){
         const sides2 = perSide2 ? 2 : 1;
         html+=`<div class="check-item" id="${sid}">
           <div class="check-box" id="${sid}_box">✓</div>
-          <div class="check-text" style="flex:1">${s.n[LANG]}<span class="cs">${s.d[LANG]}</span>${perSide2?'<span style="display:inline-block;margin-left:6px;font-size:12.5px;color:var(--gold);font-weight:700">↔ 2 strane</span>':''}
-            <div id="${sid}_stopwatch" style="display:none"><span style="font-family:'Oswald',sans-serif;font-size:18px;color:var(--gold-dark)" id="${sid}_elapsed">0s</span><span id="${sid}_side" style="display:none; margin-left:8px; font-family:'Oswald',sans-serif; font-size:14px; color:var(--red)"></span></div>
+          <div class="check-text" style="flex:1">${s.n[LANG]}<span class="cs">${s.d[LANG]}</span>
+            <div id="${sid}_stopwatch" style="display:none"><span style="font-family:'Oswald',sans-serif;font-size:18px;color:var(--gold-dark)" id="${sid}_elapsed">0s</span></div>
+            ${perSide2?`<div id="${sid}_S2_stopwatch" style="display:none"><span style="font-family:'Oswald',sans-serif;font-size:18px;color:var(--gold-dark)" id="${sid}_S2_elapsed">0s</span></div>`:''}
           </div>
           <div style="display:flex;gap:6px;align-items:center">
-            <button onclick="event.stopPropagation();startStopwatch('${sid}',${totalSec2},${sides2})" id="${sid}_startbtn"
-              style="padding:6px 11px;border-radius:9px;background:var(--gold);color:var(--ink-deep);font-family:'Oswald',sans-serif;font-weight:700;font-size:12px">▶ START</button>
+            ${perSide2
+              ? `<button onclick="event.stopPropagation();startStopwatch('${sid}',${totalSec2},1)" id="${sid}_startbtn"
+                  style="padding:8px 12px;border-radius:9px;background:var(--gold);color:var(--ink-deep);font-family:'Oswald',sans-serif;font-weight:700;font-size:13px">▶ 1. STR</button>
+                 <button onclick="event.stopPropagation();startStopwatch('${sid}_S2',${totalSec2},1)" id="${sid}_S2_startbtn"
+                  style="padding:8px 12px;border-radius:9px;background:var(--gold);color:var(--ink-deep);font-family:'Oswald',sans-serif;font-weight:700;font-size:13px">▶ 2. STR</button>`
+              : `<button onclick="event.stopPropagation();startStopwatch('${sid}',${totalSec2},1)" id="${sid}_startbtn"
+                  style="padding:8px 12px;border-radius:9px;background:var(--gold);color:var(--ink-deep);font-family:'Oswald',sans-serif;font-weight:700;font-size:13px">▶ START</button>`}
             <a class="yt-link" href="https://www.youtube.com/results?search_query=${encodeURIComponent(s.yt)}" target="_blank" onclick="event.stopPropagation()">▶</a>
           </div>
         </div>`;
@@ -2258,12 +2298,12 @@ async function buildProgress(){
     <div class="stat-card"><div class="stat-num">${totalVol>999?(totalVol/1000).toFixed(1)+'k':totalVol}</div><div class="stat-lbl">${t('volume')}</div></div>
   </div>`;
   html+=`<div class="sec-label">${t('prs')}</div>`;
-  const prEntries=Object.values(prs);
+  const prEntries=Object.entries(prs);
   if(prEntries.length){
-    prEntries.sort((a,b)=>b.date-a.date).forEach(pr=>{
+    prEntries.sort((a,b)=>b[1].date-a[1].date).forEach(([prKey,pr])=>{
       const best=pr.sets.reduce((m,s)=>{ const kg=parseFloat(s.kg)||0; return kg>m.kg?{kg,reps:s.reps}:m; },{kg:0,reps:''});
       const valTxt=best.kg>0?best.kg+' kg × '+(best.reps||'–'):(pr.sets[0]?.reps||'–')+' '+(LANG==='hr'?'pon':'Wdh');
-      html+=`<div class="pr-item"><div class="pr-name">${pr.name[LANG]}</div><div class="pr-val">${valTxt}</div></div>`;
+      html+=`<div class="pr-item"><div class="pr-name">${pr.name[LANG]}</div><div style="display:flex;align-items:center;gap:10px"><div class="pr-val">${valTxt}</div><button onclick="event.stopPropagation();deletePR('${prKey.replace(/'/g,"\\'")}')" style="background:none;border:none;font-size:17px;color:var(--ink-faint);padding:4px;cursor:pointer">🗑</button></div></div>`;
     });
   } else {
     html+=`<div class="empty"><div class="ic">🏆</div><p>${t('no_pr')}</p></div>`;
@@ -2290,6 +2330,7 @@ async function buildProgress(){
           </div>
           <div style="display:flex;align-items:center;gap:8px">
             <div class="pr-val">${h.volume>0?h.volume+' kg':'✓'}</div>
+            <button onclick="event.stopPropagation();deleteHistEntry('${h._id}')" style="background:none;border:none;font-size:17px;color:var(--ink-faint);padding:4px;cursor:pointer">🗑</button>
             <span id="hchev${hIdx}" style="color:var(--ink-faint);font-size:11px">▼</span>
           </div>
         </div>
@@ -2320,7 +2361,6 @@ function parseTargetSec(str){
 }
 
 function startStopwatch(wid, targetSec, sides){
-  sides = sides || 1;
   // If already running, stop it
   if(_stopwatches[wid] && _stopwatches[wid].running){
     stopStopwatch(wid);
@@ -2329,18 +2369,16 @@ function startStopwatch(wid, targetSec, sides){
   const startBtn = document.getElementById(wid+'_startbtn');
   const elapsedEl = document.getElementById(wid+'_elapsed');
   const swDiv = document.getElementById(wid+'_stopwatch');
-  const sideEl = document.getElementById(wid+'_side');
   if(!startBtn) return;
 
   // Show stopwatch display
   if(swDiv) swDiv.style.display='block';
-  startBtn.textContent = sides>1 ? '⏹ 1. STR.' : '⏹ STOP';
+  startBtn.textContent='⏹ STOP';
   startBtn.style.background='var(--red)';
   startBtn.style.color='#fff';
   playStartBeep();
 
-  _stopwatches[wid] = { running: true, startTime: Date.now(), targetSec, sides, side: 1 };
-  if(sides>1 && sideEl){ sideEl.style.display='inline'; sideEl.textContent = '1/'+sides+'. strana'; }
+  _stopwatches[wid] = { running: true, startTime: Date.now(), targetSec };
 
   _stopwatches[wid].interval = setInterval(()=>{
     const sw = _stopwatches[wid];
@@ -2348,17 +2386,7 @@ function startStopwatch(wid, targetSec, sides){
     const elapsed = Math.floor((Date.now() - sw.startTime) / 1000);
     if(elapsedEl) elapsedEl.textContent = elapsed+'s';
     if(elapsed >= targetSec){
-      if(sw.side < sw.sides){
-        // Switch to next side
-        playSwitchBeep();
-        sw.side++;
-        sw.startTime = Date.now();
-        if(elapsedEl) elapsedEl.textContent = '0s';
-        if(sideEl) sideEl.textContent = sw.side+'/'+sw.sides+'. strana';
-        if(startBtn) startBtn.textContent = '⏹ '+sw.side+'. STR.';
-      } else {
-        stopStopwatch(wid, elapsed);
-      }
+      stopStopwatch(wid, elapsed);
     }
   }, 200);
 }
@@ -2369,7 +2397,6 @@ function stopStopwatch(wid, forcedSec){
   clearInterval(sw.interval);
   sw.running = false;
   const elapsed = forcedSec !== undefined ? forcedSec : Math.floor((Date.now() - sw.startTime) / 1000);
-  const item = document.getElementById(wid);
   const startBtn = document.getElementById(wid+'_startbtn');
   const elapsedEl = document.getElementById(wid+'_elapsed');
   if(elapsedEl) elapsedEl.textContent = elapsed+'s';
@@ -2379,9 +2406,17 @@ function stopStopwatch(wid, forcedSec){
     startBtn.style.color = '#fff';
     startBtn.onclick = null;
   }
-  if(item) item.classList.add('done');
-  const box = document.getElementById(wid+'_box');
-  if(box){ box.textContent='✓'; box.style.background='var(--green)'; box.style.border='none'; }
+  // Determine base card id (strip _S2 suffix for second-side timers)
+  const baseId = wid.endsWith('_S2') ? wid.slice(0,-3) : wid;
+  const otherId = wid.endsWith('_S2') ? baseId : wid+'_S2';
+  const otherBtn = document.getElementById(otherId+'_startbtn');
+  const otherDone = !otherBtn || otherBtn.textContent.trim().startsWith('✓');
+  if(otherDone){
+    const item = document.getElementById(baseId);
+    if(item) item.classList.add('done');
+    const box = document.getElementById(baseId+'_box');
+    if(box){ box.textContent='✓'; box.style.background='var(--green)'; box.style.border='none'; }
+  }
   if(elapsed >= sw.targetSec) playBeep();
 }
 
