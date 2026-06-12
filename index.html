@@ -1984,7 +1984,7 @@ async function openSession(dayIdx, keepScreen){
         const secMatch = w.d[LANG].match(/(\d+)\s*sek/i);
         const minMatch = w.d[LANG].match(/(\d+)\s*min/i);
         const totalSec = secMatch ? parseInt(secMatch[1]) : (minMatch ? parseInt(minMatch[1])*60 : 30);
-        const perSide = /\/(strana|stranu|nogi|nogu|ruku|ruci|smjer|seite|bein)/i.test(w.d[LANG]);
+        const perSide = /(\/(strana|stranu|nogi|nogu|ruku|ruci|smjer|seite|bein))|(×\s*2)|(x\s*2)/i.test(w.d[LANG]);
         const sides = perSide ? 2 : 1;
         html+=`<div class="check-item" id="${wid}">
           <div class="check-box" id="${wid}_box">✓</div>
@@ -2108,7 +2108,7 @@ async function openSession(dayIdx, keepScreen){
         const secMatch2 = s.d[LANG].match(/(\d+)\s*sek/i);
         const minMatch2 = s.d[LANG].match(/(\d+)\s*min/i);
         const totalSec2 = secMatch2 ? parseInt(secMatch2[1]) : (minMatch2 ? parseInt(minMatch2[1])*60 : 30);
-        const perSide2 = /\/(strana|stranu|nogi|nogu|ruku|ruci|smjer|seite|bein)/i.test(s.d[LANG]);
+        const perSide2 = /(\/(strana|stranu|nogi|nogu|ruku|ruci|smjer|seite|bein))|(×\s*2)|(x\s*2)/i.test(s.d[LANG]);
         const sides2 = perSide2 ? 2 : 1;
         html+=`<div class="check-item" id="${sid}">
           <div class="check-box" id="${sid}_box">✓</div>
