@@ -724,6 +724,13 @@ async function fsLoadHistory(){
   } catch(e){ console.warn('history load error', e); return []; }
 }
 
+async function repeatWorkout(progId, dayIdx){
+  if(!progId || !PROGRAMS[progId]){ showToast(LANG==='hr'?'Program nije dostupan':'Programm nicht verfügbar'); return; }
+  currentProgram = progId;
+  go('session');
+  await openSession(parseInt(dayIdx)||0);
+}
+
 async function deleteHistEntry(docId){
   const msg = LANG==='hr' ? 'Obrisati ovaj trening iz povijesti?' : 'Dieses Training aus dem Verlauf löschen?';
   if(!confirm(msg)) return;
@@ -1686,7 +1693,7 @@ const I18N = {
     finish:"Završi trening", finished:"Trening završen! 💪",
     celeb_title:"BRAVO!", celeb_sub:"Trening je gotov 💪", celeb_dur:"Trajanje", celeb_vol:"Volumen", celeb_sets:"Serija", celeb_cont:"NASTAVI", celeb_motiv:"Svaki trening te čini jačim. Nastavi tako! 🐉",
     celeb_pr:"NOVI REKORD!", celeb_pr_sub:"Podigao si više nego ikad 🏆", celeb_streak:"NIZ TRENINGA", celeb_days:"dana zaredom",
-    workouts:"Treninga", volume:"Volumen (kg)", prs:"Osobni rekordi",
+    workouts:"Treninga", volume:"Volumen (kg)", prs:"Osobni rekordi", calories:"Kalorije", cal_label:"kcal", cal_total:"Kalorija (kcal)", calendar_label:"Kalendar treninga", streak_label:"dana niz", repeat:"Ponovi trening", days_short:["NED","PON","UTO","SRI","ČET","PET","SUB"],
     no_data:"Još nema podataka. Završi prvi trening!",
     no_pr:"Završi vježbu s težinom da postaviš rekord.",
     accept:"Razumijem i prihvaćam. Vježbam na vlastitu odgovornost.",
@@ -1706,7 +1713,7 @@ const I18N = {
     finish:"Training beenden", finished:"Training abgeschlossen! 💪",
     celeb_title:"BRAVO!", celeb_sub:"Training geschafft 💪", celeb_dur:"Dauer", celeb_vol:"Volumen", celeb_sets:"Sätze", celeb_cont:"WEITER", celeb_motiv:"Jedes Training macht dich stärker. Weiter so! 🐉",
     celeb_pr:"NEUER REKORD!", celeb_pr_sub:"Mehr gehoben als je zuvor 🏆", celeb_streak:"TRAININGS-SERIE", celeb_days:"Tage in Folge",
-    workouts:"Trainings", volume:"Volumen (kg)", prs:"Persönliche Rekorde",
+    workouts:"Trainings", volume:"Volumen (kg)", prs:"Persönliche Rekorde", calories:"Kalorien", cal_label:"kcal", cal_total:"Kalorien (kcal)", calendar_label:"Trainingskalender", streak_label:"Tage Serie", repeat:"Training wiederholen", days_short:["SO","MO","DI","MI","DO","FR","SA"],
     no_data:"Noch keine Daten. Beende dein erstes Training!",
     no_pr:"Beende eine Übung mit Gewicht, um einen Rekord zu setzen.",
     accept:"Ich verstehe und akzeptiere. Ich trainiere auf eigene Verantwortung.",
@@ -2203,10 +2210,13 @@ async function finishWorkout(){
   });
   const entry = {
     program:currentProgram,
+    programId:currentProgram,
     programName:p.name,
     day:day.title,
+    dayIdx:currentDayIdx,
     date:Date.now(),
     volume:Math.round(totalVol),
+    kcal:Math.max(0, Math.round((totalVol*0.1)+(durationMin*5))),
     duration:durationMin,
     exercises:exDetails
   };
@@ -2293,9 +2303,41 @@ async function buildProgress(){
   const prs = await getPRs();
   const totalWorkouts=hist.length;
   const totalVol=hist.reduce((a,h)=>a+(h.volume||0),0);
-  let html=`<div class="stat-grid">
+  const totalKcal=hist.reduce((a,h)=>a+(h.kcal||Math.round(((h.volume||0)*0.1)+((h.duration||0)*5))),0);
+
+  // === Calendar (last 7 days) + streak ===
+  const today=new Date(); today.setHours(0,0,0,0);
+  const trainedDays=new Set((hist||[]).map(h=>{ const d=new Date(h.date); d.setHours(0,0,0,0); return d.getTime(); }));
+  let streak=0; let cur=new Date(today);
+  if(!trainedDays.has(cur.getTime())){ cur.setDate(cur.getDate()-1); }
+  while(trainedDays.has(cur.getTime())){ streak++; cur.setDate(cur.getDate()-1); }
+  const dayShort=t('days_short');
+  let calCells='';
+  for(let i=6;i>=0;i--){
+    const d=new Date(today); d.setDate(d.getDate()-i);
+    const did=d.getTime();
+    const trained=trainedDays.has(did);
+    const isToday=did===today.getTime();
+    const dow=dayShort[d.getDay()];
+    calCells+=`<div style="flex:1;text-align:center">
+      <div style="font-size:10.5px;letter-spacing:1px;color:var(--ink-faint);font-weight:600">${dow}</div>
+      <div style="margin-top:6px;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-inline:auto;background:${trained?'var(--gold)':'transparent'};color:${trained?'var(--ink-deep)':'var(--ink-soft)'};border:${isToday&&!trained?'2px solid var(--gold)':'1px solid var(--line)'};font-family:'Oswald',sans-serif;font-weight:700;font-size:15px">
+        ${trained?'✓':d.getDate()}
+      </div>
+    </div>`;
+  }
+  let html=`<div class="day-card" style="margin-bottom:12px;padding:14px 12px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="font-family:'Oswald',sans-serif;font-weight:600;font-size:14px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-soft)">📅 ${t('calendar_label')}</div>
+      ${streak>=2?`<div style="display:flex;align-items:center;gap:5px;background:linear-gradient(135deg,#ffe9d6,#ffd3a8);color:#9a4a1c;padding:4px 10px;border-radius:11px;font-family:'Oswald',sans-serif;font-weight:700;font-size:12px">🔥 ${streak} ${t('streak_label')}</div>`:''}
+    </div>
+    <div style="display:flex;gap:4px">${calCells}</div>
+  </div>`;
+
+  html+=`<div class="stat-grid" style="grid-template-columns:1fr 1fr 1fr">
     <div class="stat-card"><div class="stat-num">${totalWorkouts}</div><div class="stat-lbl">${t('workouts')}</div></div>
     <div class="stat-card"><div class="stat-num">${totalVol>999?(totalVol/1000).toFixed(1)+'k':totalVol}</div><div class="stat-lbl">${t('volume')}</div></div>
+    <div class="stat-card"><div class="stat-num">${totalKcal>999?(totalKcal/1000).toFixed(1)+'k':totalKcal}</div><div class="stat-lbl">${t('cal_total')}</div></div>
   </div>`;
   html+=`<div class="sec-label">${t('prs')}</div>`;
   const prEntries=Object.entries(prs);
@@ -2329,7 +2371,11 @@ async function buildProgress(){
             <div style="font-size:11px;color:var(--ink-faint);margin-top:2px">${(h.programName[LANG]||h.programName.hr||'—')} · ${ds}${durTxt}</div>
           </div>
           <div style="display:flex;align-items:center;gap:8px">
-            <div class="pr-val">${h.volume>0?h.volume+' kg':'✓'}</div>
+            <div style="text-align:right">
+              <div class="pr-val">${h.volume>0?h.volume+' kg':'✓'}</div>
+              <div style="font-size:11px;color:#e6a02b;font-weight:600;margin-top:2px">🔥 ${h.kcal||Math.round(((h.volume||0)*0.1)+((h.duration||0)*5))} kcal</div>
+            </div>
+            <button onclick="event.stopPropagation();repeatWorkout('${h.programId||''}',${h.dayIdx||0})" title="${t('repeat')}" style="background:var(--gold-soft);border:1px solid var(--line);font-size:15px;color:var(--gold-dark);padding:6px 9px;border-radius:9px;cursor:pointer">🔁</button>
             <button onclick="event.stopPropagation();deleteHistEntry('${h._id}')" style="background:none;border:none;font-size:17px;color:var(--ink-faint);padding:4px;cursor:pointer">🗑</button>
             <span id="hchev${hIdx}" style="color:var(--ink-faint);font-size:11px">▼</span>
           </div>
